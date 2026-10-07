@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project E · ROS 2 mini stack · Mechatronics Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/course.css">
+<link rel="stylesheet" href="../css/motion.css">
+</head>
+<body data-lesson="10-project-ros2-mini-stack" data-base="lessons" data-prev="10-project-two-link-arm.html" data-next="">
+<div class="course-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html">Mechatronics <span>Studio</span></a>
+    <div class="sub">Deep Systems Course</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+<div class="main-wrap">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      <div class="topbar-title"><strong>Mechatronics Studio</strong> · Deep Systems</div>
+    </div>
+    <div class="progress-pill">
+      <span data-progress-pct>0%</span>
+      <div class="progress-bar"><div class="progress-bar-fill" data-progress-fill style="width:0%"></div></div>
+    </div>
+  </header>
+  <main class="content page-enter">
+<div class="lesson-meta">Module 10 · Project Studio</div>
+<h1>Project E · ROS 2 mini stack</h1>
+
+<p>In simulation first, publish joint states or <code>cmd_vel</code>, visualise TF, and run a simple nav or pick style demo. Inspired by TU Delft Hello ROS modules and Michigan ROB 320 style ROS coursework, written here as original studio guidance.</p>
+
+<h2>Success criteria</h2>
+<ul>
+<li>A TF tree displays in visualisation with named frames that match your diagram.</li>
+<li>A node publishes a command topic; another node or controller reacts in sim.</li>
+<li>You document QoS choices for one sensor style topic.</li>
+<li>A short README lists launch steps another student can follow.</li>
+</ul>
+
+<div class="callout reveal-up try">
+<strong class="label">Sim first</strong>
+Prefer Gazebo, Ignition, or other supported sims before hardware bridges. Hard realtime loops stay off the ROS graph when deadlines are tight, matching Module 8 advice.
+</div>
+
+<h2>Procedure sketch</h2>
+<ol>
+<li>Draw frames: map, base_link, wheel or arm links, and sensor optical frame.</li>
+<li>Publish static and joint transforms until the tree looks right.</li>
+<li>Add a <code>cmd_vel</code> or joint trajectory publisher and a listener that logs or moves the sim robot.</li>
+<li>Run one nav or pick related tutorial path without pasting vendor prose into your report. Cite the open course you followed.</li>
+<li>Write the README with versions, launch commands, and a TF screenshot.</li>
+</ol>
+
+<div class="worked reveal-up">
+<h3>Worked failure · broken frames</h3>
+<p>Visualisation shows the laser floating metres away because the optical frame parent was wrong. Navigation then plans through walls. Fix: treat TF as a first class acceptance test before enabling planners.</p>
+</div>
+
+<div class="callout reveal-up watch">
+<strong class="label">Capstone fork</strong>
+After Project E you may choose a capstone: precision linear stage error budget, collaborative cell safety modes walkthrough, or Monte Carlo localisation challenge. Cite the open institutes that inspired your choice in your report (TU Delft motion systems spirit, Module 8 cobots plus ISO style reading, or Imperial Davison pattern).
+</div>
+<div class="terms-box reveal-up"><h3>Key terms</h3>
+<dl>
+<dt>cmd_vel</dt><dd>Common velocity command topic for mobile bases.</dd>
+<dt>TF tree</dt><dd>Living graph of frames; must pass visual inspection.</dd>
+<dt>QoS</dt><dd>Delivery policies between publishers and subscribers.</dd>
+<dt>Launch</dt><dd>Start script that brings up the node graph.</dd>
+</dl></div>
+
+<div class="callout reveal-up then">
+<strong class="label">Further study</strong>
+This lesson is original Mechatronics Studio writing. For deeper open materials, start here:
+<ul style="margin:0.5rem 0 0;padding-left:1.2rem">
+<li><a href="https://ocw.tudelft.nl/courses/hello-real-world-ros-robot-operating-system/" target="_blank" rel="noopener noreferrer">TU Delft Hello ROS (OCW)</a></li>
+<li><a href="https://robotics.umich.edu/academics/courses/online-courses/" target="_blank" rel="noopener noreferrer">Michigan Robotics online courses hub</a></li>
+<li><a href="https://modernrobotics.org/" target="_blank" rel="noopener noreferrer">Modern Robotics</a></li>
+<li><a href="https://www.doc.ic.ac.uk/~ajd/Robotics/" target="_blank" rel="noopener noreferrer">Imperial College Robotics</a></li>
+</ul>
+</div>
+
+<div class="callout reveal-up key">
+<strong class="label">Studio checkpoint</strong>
+Before you mark this lesson complete, sketch the primary idea from memory, restate the worked scenario with different numbers, and name one modern practice that extends the classical idea without deleting it. If you cannot do those three things, skim the Key terms and Further study links once more. Mechatronics rewards active recall more than passive scrolling.
+</div>
+<form class="quiz reveal-up" data-quiz="10-project-ros2-mini-stack">
+<h3>Check your understanding</h3>
+<div class="quiz-q" data-answer="b">
+<div class="q-text">1. Before enabling planners you should:</div>
+<label><input type="radio" name="q1" value="a"> Ignore TF</label>
+<label><input type="radio" name="q1" value="b"> Visually verify the TF tree against your diagram</label>
+<label><input type="radio" name="q1" value="c"> Maximise cmd_vel blindly</label>
+<label><input type="radio" name="q1" value="d"> Disable all logs</label>
+<div class="explain">Frames first.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">2. Sim first primarily reduces:</div>
+<label><input type="radio" name="q2" value="a"> Hardware risk while learning the graph</label>
+<label><input type="radio" name="q2" value="b"> The need for any documentation</label>
+<label><input type="radio" name="q2" value="c"> Physics</label>
+<label><input type="radio" name="q2" value="d"> Named frames</label>
+<div class="explain">Rehearsal.</div>
+</div>
+
+<div class="quiz-q" data-answer="c">
+<div class="q-text">3. QoS documentation matters because:</div>
+<label><input type="radio" name="q3" value="a"> It decorates README files only</label>
+<label><input type="radio" name="q3" value="b"> DDS ignores it</label>
+<label><input type="radio" name="q3" value="c"> Mismatched policies can cause silent data loss</label>
+<label><input type="radio" name="q3" value="d"> It replaces safety PLCs</label>
+<div class="explain">Delivery semantics.</div>
+</div>
+
+<div class="quiz-q" data-answer="b">
+<div class="q-text">4. Hard sub millisecond loops should:</div>
+<label><input type="radio" name="q4" value="a"> Always live as best effort Python topics</label>
+<label><input type="radio" name="q4" value="b"> Often stay in RT firmware with ROS bridging setpoints</label>
+<label><input type="radio" name="q4" value="c"> Delete watchdogs</label>
+<label><input type="radio" name="q4" value="d"> Ignore timing</label>
+<div class="explain">Realtime boundaries.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">5. A student ready README should include:</div>
+<label><input type="radio" name="q5" value="a"> Versions, launch steps, and a TF screenshot</label>
+<label><input type="radio" name="q5" value="b"> Only emojis</label>
+<label><input type="radio" name="q5" value="c"> Only secrets</label>
+<label><input type="radio" name="q5" value="d"> Only a vibe</label>
+<div class="explain">Reproducibility.</div>
+</div>
+
+<button type="submit" class="btn btn-primary">Submit answers</button>
+<div class="quiz-result"></div></form>
+
+<div class="lesson-footer">
+  <a class="btn btn-outline" href="10-project-two-link-arm.html">← Project D Two link arm</a>
+  <button type="button" class="btn btn-primary" id="mark-complete">Mark complete</button>
+  <a class="btn btn-secondary" href="../course.html">Back to syllabus</a>
+</div>
+  </main>
+</div>
+</div>
+<script src="../js/course.js"></script>
+<script src="../js/motion.js" defer></script>
+</body>
+</html>

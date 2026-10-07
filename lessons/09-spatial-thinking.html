@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spatial transforms and frames · Mechatronics Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/course.css">
+<link rel="stylesheet" href="../css/motion.css">
+</head>
+<body data-lesson="09-spatial-thinking" data-base="lessons" data-prev="08-then-vs-now-map.html" data-next="09-forward-kinematics.html">
+<div class="course-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html">Mechatronics <span>Studio</span></a>
+    <div class="sub">Deep Systems Course</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+<div class="main-wrap">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      <div class="topbar-title"><strong>Mechatronics Studio</strong> · Deep Systems</div>
+    </div>
+    <div class="progress-pill">
+      <span data-progress-pct>0%</span>
+      <div class="progress-bar"><div class="progress-bar-fill" data-progress-fill style="width:0%"></div></div>
+    </div>
+  </header>
+  <main class="content page-enter">
+<div class="lesson-meta">Module 9 · Robot mechanics and estimation</div>
+<h1>Spatial transforms and frames</h1>
+
+<p>Mechatronics Studio so far treated many systems as scalar loops. A temperature reaches a setpoint. A shaft speed tracks a reference. That mindset still matters. Real products also move bodies through space. A robot arm, a camera on a gimbal, a pick head on a gantry, and a mobile base all need a shared language for where things are and which way they point.</p>
+
+<h2>Position, orientation, pose</h2>
+<p>Position answers where a point sits relative to a frame. Orientation answers which way a body is twisted relative to a frame. Pose combines both. When a datasheet says a gripper is at a pose, it claims a full placement, not only an XYZ triple.</p>
+
+<h2>Why frames multiply</h2>
+<p>Every sensor and actuator secretly owns a frame. An encoder measures a joint angle in the joint frame. A force torque sensor reports wrenches in its flange frame. A depth camera sees points in the camera optical frame. If software assumes those frames are identical, calibration bugs appear as mysterious offsets.</p>
+<p>Name frames early. Typical names include world or map, base, shoulder, elbow, wrist, tool, and camera. Consistency beats cleverness.</p>
+
+<div class="callout reveal-up try">
+<strong class="label">Learning outcomes</strong>
+Explain why mechatronic products need named frames. Distinguish position, orientation, and pose. Compose a simple chain of transforms in words and in a 2D sketch. Relate frames to ROS style TF trees and to camera to tool calibration.
+</div>
+
+<h2>Composition intuition</h2>
+<p>If you know where the camera sits on the robot and where an object sits in the camera view, you can reason about where the object sits in the robot base. You multiply transforms in a careful order. The algebra appears in open robotics courses. The engineering habit is simpler: draw the chain, label each arrow, and refuse to add vectors from mismatched frames.</p>
+
+<h2>Connection to Module 8</h2>
+<p>When the ROS 2 lesson mentioned transforms, this is the missing foundation. A TF tree is a living graph of these named poses, updated as joints move.</p>
+
+<div class="worked reveal-up">
+<h3>Worked scenario · vacuum gripper approach</h3>
+<p>Vision reports the box center 0.4 m ahead of the camera and 0.05 m to the left. The camera sits 0.25 m above the tool flange and looks slightly down. Without a frame diagram, a programmer might command the tool to the camera numbers and miss the box. With a frame diagram, the team converts camera measurements into base coordinates, then into a tool approach pose with a safe offset along the tool Z axis.</p>
+</div>
+
+<div class="callout reveal-up watch">
+<strong class="label">Studio lab idea</strong>
+On paper or in a simulator, define base, camera, and tool frames for a desk robot. Measure or assume one fixed camera to tool transform. Given a fake object pose in camera coordinates, compute a tool approach pose with a 30 mm standoff.
+</div>
+<div class="terms-box reveal-up"><h3>Key terms</h3>
+<dl>
+<dt>Frame</dt><dd>A named coordinate system attached to a body, sensor, or world origin.</dd>
+<dt>Pose</dt><dd>Position plus orientation of a body relative to a frame.</dd>
+<dt>Transform</dt><dd>The mapping that takes coordinates from one frame into another.</dd>
+<dt>TF tree</dt><dd>A graph of related frames that updates as the mechanism moves.</dd>
+<dt>Calibration</dt><dd>Measuring and storing fixed transforms between sensors, tools, and robot links.</dd>
+<dt>Wrench</dt><dd>A combined force and torque expressed in a frame.</dd>
+</dl></div>
+
+<div class="callout reveal-up then">
+<strong class="label">Further study</strong>
+This lesson is original Mechatronics Studio writing. For deeper open materials, start here:
+<ul style="margin:0.5rem 0 0;padding-left:1.2rem">
+<li><a href="https://see.stanford.edu/Course/CS223A" target="_blank" rel="noopener noreferrer">Stanford Engineering Everywhere CS223A (spatial descriptions and transforms)</a></li>
+<li><a href="https://modernrobotics.org/" target="_blank" rel="noopener noreferrer">Modern Robotics free preprint, Chapters 2 and 3</a></li>
+<li><a href="https://manipulation.mit.edu/" target="_blank" rel="noopener noreferrer">MIT Robotic Manipulation notes</a></li>
+<li><a href="https://ethz.ch/content/dam/ethz/special-interest/mavt/robotics-n-intelligent-systems/multiscaleroboticlab-dam/IRM/irm_syllabus_2025.pdf" target="_blank" rel="noopener noreferrer">ETH Introduction to Robotics and Mechatronics syllabus PDF</a></li>
+</ul>
+</div>
+
+<div class="callout reveal-up key">
+<strong class="label">Studio checkpoint</strong>
+Before you mark this lesson complete, sketch the primary idea from memory, restate the worked scenario with different numbers, and name one modern practice that extends the classical idea without deleting it. If you cannot do those three things, skim the Key terms and Further study links once more. Mechatronics rewards active recall more than passive scrolling.
+</div>
+<form class="quiz reveal-up" data-quiz="09-spatial-thinking">
+<h3>Check your understanding</h3>
+<div class="quiz-q" data-answer="c">
+<div class="q-text">1. Pose includes:</div>
+<label><input type="radio" name="q1" value="a"> Only XYZ</label>
+<label><input type="radio" name="q1" value="b"> Only orientation</label>
+<label><input type="radio" name="q1" value="c"> Position and orientation</label>
+<label><input type="radio" name="q1" value="d"> Only joint angles</label>
+<div class="explain">Pose is a full placement.</div>
+</div>
+
+<div class="quiz-q" data-answer="b">
+<div class="q-text">2. Mixing camera metres with base metres without a transform most often causes:</div>
+<label><input type="radio" name="q2" value="a"> Better accuracy</label>
+<label><input type="radio" name="q2" value="b"> Frame inconsistency bugs</label>
+<label><input type="radio" name="q2" value="c"> Lower PWM</label>
+<label><input type="radio" name="q2" value="d"> PLC scan speedup</label>
+<div class="explain">Mismatched frames create offsets.</div>
+</div>
+
+<div class="quiz-q" data-answer="b">
+<div class="q-text">3. A TF tree is best described as:</div>
+<label><input type="radio" name="q3" value="a"> A power cable map</label>
+<label><input type="radio" name="q3" value="b"> A graph of related frames over time</label>
+<label><input type="radio" name="q3" value="c"> A PID gain table</label>
+<label><input type="radio" name="q3" value="d"> A bill of materials</label>
+<div class="explain">Living pose graph.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">4. Naming frames early mainly helps you:</div>
+<label><input type="radio" name="q4" value="a"> Avoid mysterious calibration offsets</label>
+<label><input type="radio" name="q4" value="b"> Raise motor Kv</label>
+<label><input type="radio" name="q4" value="c"> Delete dynamics</label>
+<label><input type="radio" name="q4" value="d"> Skip safety PLCs</label>
+<div class="explain">Clear names prevent silent frame bugs.</div>
+</div>
+
+<div class="quiz-q" data-answer="c">
+<div class="q-text">5. A wrench combines:</div>
+<label><input type="radio" name="q5" value="a"> Only current and voltage</label>
+<label><input type="radio" name="q5" value="b"> Only joint counts</label>
+<label><input type="radio" name="q5" value="c"> Force and torque in a frame</label>
+<label><input type="radio" name="q5" value="d"> Only WiFi credentials</label>
+<div class="explain">Force plus torque.</div>
+</div>
+
+<button type="submit" class="btn btn-primary">Submit answers</button>
+<div class="quiz-result"></div></form>
+
+<div class="lesson-footer">
+  <a class="btn btn-outline" href="08-then-vs-now-map.html">← Then vs now curriculum map</a>
+  <button type="button" class="btn btn-primary" id="mark-complete">Mark complete</button>
+  <a class="btn btn-secondary" href="09-forward-kinematics.html">Forward kinematics intuition →</a>
+</div>
+  </main>
+</div>
+</div>
+<script src="../js/course.js"></script>
+<script src="../js/motion.js" defer></script>
+</body>
+</html>

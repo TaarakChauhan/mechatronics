@@ -103,6 +103,36 @@
           { id: "08-cobots-safety-security", title: "Cobots, safety & OT security", file: "08-cobots-safety-security.html" },
           { id: "08-then-vs-now-map", title: "Then vs now curriculum map", file: "08-then-vs-now-map.html" }
         ]
+      },
+      {
+        id: "m9",
+        num: 9,
+        title: "Robot mechanics and estimation",
+        blurb: "Spatial frames, kinematics intuition, Jacobians, discrete control, estimation, planning, and mobile bases.",
+        lessons: [
+          { id: "09-spatial-thinking", title: "Spatial transforms and frames", file: "09-spatial-thinking.html" },
+          { id: "09-forward-kinematics", title: "Forward kinematics intuition", file: "09-forward-kinematics.html" },
+          { id: "09-jacobians-and-singularities", title: "Jacobians and singularities", file: "09-jacobians-and-singularities.html" },
+          { id: "09-inverse-kinematics-trajectories", title: "IK and trajectories", file: "09-inverse-kinematics-trajectories.html" },
+          { id: "09-discrete-pid-on-mcus", title: "Discrete PID on MCUs", file: "09-discrete-pid-on-mcus.html" },
+          { id: "09-sensor-fusion-kalman-intuition", title: "Sensor fusion intuition", file: "09-sensor-fusion-kalman-intuition.html" },
+          { id: "09-motion-planning-overview", title: "Motion planning overview", file: "09-motion-planning-overview.html" },
+          { id: "09-mobile-robots-nonholonomic", title: "Mobile robots intro", file: "09-mobile-robots-nonholonomic.html" }
+        ]
+      },
+      {
+        id: "m10",
+        num: 10,
+        title: "Project Studio",
+        blurb: "Progressive builds from sensing to closed loops, mobile behaviours, arms, and a ROS 2 sim stack.",
+        lessons: [
+          { id: "10-project-studio-intro", title: "Project Studio mindset", file: "10-project-studio-intro.html" },
+          { id: "10-project-sense-and-display", title: "Project A Sense and display", file: "10-project-sense-and-display.html" },
+          { id: "10-project-closed-loop-position", title: "Project B Closed loop position", file: "10-project-closed-loop-position.html" },
+          { id: "10-project-line-follower", title: "Project C Line or wall follower", file: "10-project-line-follower.html" },
+          { id: "10-project-two-link-arm", title: "Project D Two link arm", file: "10-project-two-link-arm.html" },
+          { id: "10-project-ros2-mini-stack", title: "Project E ROS 2 mini stack", file: "10-project-ros2-mini-stack.html" }
+        ]
       }
     ]
   };
