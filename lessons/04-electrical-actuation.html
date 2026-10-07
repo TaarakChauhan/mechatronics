@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Electrical actuation — Mechatronics Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/course.css">
+<link rel="stylesheet" href="../css/motion.css">
+</head>
+<body data-lesson="04-electrical-actuation" data-base="lessons" data-prev="04-mechanical-actuation.html" data-next="05-microprocessors.html">
+<div class="course-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html">Mechatronics <span>Studio</span></a>
+    <div class="sub">Deep Systems Course</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+<div class="main-wrap">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      <div class="topbar-title"><strong>Mechatronics Studio</strong> · Deep Systems</div>
+    </div>
+    <div class="progress-pill">
+      <span data-progress-pct>0%</span>
+      <div class="progress-bar"><div class="progress-bar-fill" data-progress-fill style="width:0%"></div></div>
+    </div>
+  </header>
+  <main class="content page-enter">
+<div class="lesson-meta">Module 4 — Actuation</div>
+<h1>Electrical actuation</h1>
+
+<p>Electrical actuation spans from a relay contact to a field-oriented BLDC servo. Selection starts from motion profile, torque/force, duty cycle, environment, and control interface.</p>
+
+<h2>Switching and solenoids</h2>
+<p>Mechanical switches and relays offer galvanic isolation and simplicity; life and arcing limit them. Solid-state relays and MOSFETs switch silently and fast but need thermal design and may leak. Solenoids convert current to short-stroke force — great for valves and latches, poor for long precise strokes.</p>
+
+<h2>Motors</h2>
+<ul>
+<li><strong>Brushed DC</strong> — easy drive; brush wear; still fine for cost-sensitive duties.</li>
+<li><strong>AC induction</strong> — workhorses with VFDs for pumps/fans.</li>
+<li><strong>Stepper</strong> — open-loop discrete moves; stalls if torque margin vanishes.</li>
+<li><strong>DC / BLDC servo</strong> — closed-loop with encoder; high dynamic performance.</li>
+</ul>
+
+<div class="callout reveal-up then">
+<strong class="label">Then vs now</strong>
+Brushed DC plus H-bridge was the teaching default. Production motion increasingly uses BLDC with FOC, integrated drives, and safety torque off (STO) — Module 8.
+</div>
+
+<div class="worked reveal-up">
+<h3>Worked example — stepper open-loop risk</h3>
+<p>A 1.8° stepper (200 steps/rev) with 16× microstepping commands 3200 pulses/rev. If load torque exceeds available torque at speed, the motor skips steps and position is lost without an encoder. Adding a cheap encoder closes the truth gap.</p>
+</div>
+
+<div class="terms-box reveal-up"><h3>Key terms</h3>
+<dl>
+<dt>VFD</dt><dd>Variable frequency drive for AC motors.</dd>
+<dt>Servo motor</dt><dd>Motor operated in closed-loop motion control.</dd>
+<dt>STO</dt><dd>Safe Torque Off — safety function removing torque-producing energy.</dd>
+</dl></div>
+
+
+<!--expanded-->
+
+<h2>Thermal limits and selection workflow</h2>
+<p>Motors are thermally limited. Peak torque may be available for seconds; continuous torque is lower. Duty cycle, ambient, and altitude change the continuous rating. Selection workflow: motion profile → torque/speed envelope → margin for friction/acceleration → thermal check → feedback/resolution → drive/network interface → safety functions (STO, SS1, etc.).</p>
+<p>Stepper open-loop is attractive until missed steps cost a scrap batch. Closed-loop steppers and cheap servo systems have narrowed that gap. Choose based on risk of silent position loss, not only catalogue price.</p>
+
+<!--dive-->
+
+<h2>Drive interfaces and braking</h2>
+<p>Command interfaces evolved from ±10 V analogue velocity commands to fieldbus cyclic setpoints. Analogue still exists and still suffers offset and noise; digital setpoints need watchdog of communications loss.</p>
+<p>Dynamic braking and regenerative handling protect DC buses. Vertical axes need mechanical brakes rated for load, not only electronic disable.</p>
+<p>Inrush and EMC filters affect whether a drive trips neighbouring sensors. Layout and earthing plans are actuation documents.</p>
+<p>Selection example: continuous torque 1.2 N·m at 2000 rpm, peak 3.5 N·m for 1 s accel. Check catalogue S1/S3 ratings and thermal models rather than peak-only shopping.</p>
+<!--essay-->
+
+<h2>Extended studio notes — 04 electrical actuation</h2>
+<p>In professional mechatronics work, the ideas in this lesson show up less as isolated definitions and more as constraints that fight each other. Thermal limits turn peak torque fantasies into continuous-duty realities. When you write requirements, force numbers onto those constraints: sample rates, newton-metres, degrees Celsius, milliseconds of latency, millimetres of error. Vague adjectives hide trade-offs until tooling steel is already ordered.</p>
+<p>A useful studio habit is to keep a living “assumption list” beside your block diagram. Typical assumptions include linearity, constant temperature, perfect sampling clocks, infinite actuator authority, and noise-free sensors. Assuming steppers never lose steps is fine until a jam scrapes a fixture. Crossing out an assumption should trigger either a model upgrade, a hardware change, or an explicit residual risk acceptance signed by someone accountable.</p>
+<p>Commissioning is where theory meets cable trays. Expect ground loops, mis-labelled I/O, incorrect engineering-unit scales, and mechanical binding that looks like a “software bug.” STO wiring errors create either nuisance trips or silent loss of protection. Bring an oscilloscope or drive trace tool early; bring a torque wrench and alignment dial indicator just as early. The mechatronic engineer who only debugs in an IDE will misclassify half of field faults.</p>
+<p>Documentation is part of the control system. Record firmware hashes, gain sets, mechanical revisions, and network topologies together. Future failure analysis needs that bundle. Brake sizing for gravity loads is a safety calculation, not an accessory checkbox. If your organisation treats documents as after-the-fact paperwork, expect to rediscover tuning constants from scratch after every staff rotation.</p>
+<p>Finally, connect this lesson forward and backward in the course. Foundations without modern networks leave you unable to ship connected machines; modern buzzwords without foundations leave you unable to stabilise a simple loop. BLDC+FOC in Module 8 extends this selection workflow rather than deleting it. Use the quizzes not as memorisation theatre but as prompts to redraw the diagrams from memory on paper — that retrieval practice builds the intuition you will need on a noisy factory floor.</p>
+<div class="worked reveal-up">
+<h3>Additional worked scenario</h3>
+<p>Profile: accel 0.2 s to 1000 rpm, J_total 1e-3 kg·m². ω=104.7 rad/s, α=523 rad/s², T=Jα≈0.52 N·m plus friction 0.1 ⇒ ~0.62 N·m peak. Continuous may be only 0.25 N·m — verify catalogue peak time and RMS duty.</p>
+</div>
+
+<form class="quiz reveal-up" data-quiz="04-electrical-actuation">
+<h3>Check your understanding</h3>
+<div class="quiz-q" data-answer="d">
+<div class="q-text">1. Steppers in pure open-loop:</div>
+<label><input type="radio" name="q1" value="a"> Never lose steps</label>
+<label><input type="radio" name="q1" value="b"> Need hydraulics</label>
+<label><input type="radio" name="q1" value="c"> Cannot microstep</label>
+<label><input type="radio" name="q1" value="d"> Can lose position if overloaded</label>
+<div class="explain">Torque margin failure skips steps.</div>
+</div>
+
+<div class="quiz-q" data-answer="d">
+<div class="q-text">2. Solenoids excel at:</div>
+<label><input type="radio" name="q2" value="a"> Long precise CNC paths</label>
+<label><input type="radio" name="q2" value="b"> Generating 3-phase FOC</label>
+<label><input type="radio" name="q2" value="c"> LiDAR</label>
+<label><input type="radio" name="q2" value="d"> Short-stroke on/off force</label>
+<div class="explain">Classic short stroke actuators.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">3. Solid-state vs mechanical relays:</div>
+<label><input type="radio" name="q3" value="a"> SSR typically faster, no contact wear, different failure modes</label>
+<label><input type="radio" name="q3" value="b"> Mechanical always silent forever</label>
+<label><input type="radio" name="q3" value="c"> SSR provides perfect galvanic isolation always</label>
+<label><input type="radio" name="q3" value="d"> Neither switches current</label>
+<div class="explain">Trade isolation/leakage/life.</div>
+</div>
+
+<div class="quiz-q" data-answer="c">
+<div class="q-text">4. A servo motor implies:</div>
+<label><input type="radio" name="q4" value="a"> Open-loop only</label>
+<label><input type="radio" name="q4" value="b"> No encoder ever</label>
+<label><input type="radio" name="q4" value="c"> Closed-loop motion with feedback</label>
+<label><input type="radio" name="q4" value="d"> Only steam</label>
+<div class="explain">Feedback is the servo idea.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">5. VFDs mainly control:</div>
+<label><input type="radio" name="q5" value="a"> AC motor speed/torque via frequency/voltage</label>
+<label><input type="radio" name="q5" value="b"> Only LEDs</label>
+<label><input type="radio" name="q5" value="c"> RTD curves</label>
+<label><input type="radio" name="q5" value="d"> Paper humidity</label>
+<div class="explain">Variable frequency drives.</div>
+</div>
+
+<button type="submit" class="btn btn-primary">Submit answers</button>
+<div class="quiz-result"></div></form>
+<div class="lesson-footer">
+  <a class="btn btn-outline" href="04-mechanical-actuation.html">← Previous</a>
+  <button type="button" class="btn btn-primary" id="mark-complete">Mark complete</button>
+  <a class="btn btn-secondary" href="05-microprocessors.html">Next →</a>
+</div>
+  </main>
+</div>
+</div>
+<script src="../js/course.js"></script>
+<script src="../js/motion.js" defer></script>
+</body>
+</html>

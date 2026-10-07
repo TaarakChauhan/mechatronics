@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case studies: ABS & camera — Mechatronics Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/course.css">
+<link rel="stylesheet" href="../css/motion.css">
+</head>
+<body data-lesson="07-case-abs-and-camera" data-base="lessons" data-prev="07-mechatronic-design.html" data-next="07-case-cnc-and-appliance.html">
+<div class="course-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html">Mechatronics <span>Studio</span></a>
+    <div class="sub">Deep Systems Course</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+<div class="main-wrap">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      <div class="topbar-title"><strong>Mechatronics Studio</strong> · Deep Systems</div>
+    </div>
+    <div class="progress-pill">
+      <span data-progress-pct>0%</span>
+      <div class="progress-bar"><div class="progress-bar-fill" data-progress-fill style="width:0%"></div></div>
+    </div>
+  </header>
+  <main class="content page-enter">
+<div class="lesson-meta">Module 7 — Deep integrated systems</div>
+<h1>Case studies: ABS & camera</h1>
+
+<p>Two deep cases show the same mechatronic spine: sense → condition → decide → actuate → verify, under hard constraints.</p>
+
+<h2>Case A — ABS / ESC family</h2>
+<p><strong>Need:</strong> maintain steerability and stability during braking and yaw disturbances. <strong>Sensors:</strong> wheel-speed (often tone ring + Hall/VR), yaw rate and lateral acceleration (MEMS), steering angle, brake pressure. <strong>Conditioning:</strong> speed decoding, plausibility checks, sensor fusion for vehicle state. <strong>Control:</strong> detect impending lock (wheel deceleration / slip), modulate hydraulic pressure via solenoid valves and pump; ESC adds selective braking and engine torque requests. <strong>Actuators:</strong> hydraulic modulator. <strong>Watch-outs:</strong> false interventions, low-µ surfaces, spare-tire radius mismatches, communication loss to yaw sensor.</p>
+
+<div class="diagram">
+<svg viewBox="0 0 640 160" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="160" fill="#f8fafc"/>
+  <text x="20" y="24" font-family="IBM Plex Sans" font-size="12" fill="#64748b">ABS conceptual loop</text>
+  <rect x="20" y="55" width="100" height="50" rx="6" fill="#14b8a6" opacity="0.25" stroke="#0d9488" class="svg-pulse"/>
+  <text x="35" y="85" font-size="11">Wheel speed</text>
+  <text x="125" y="82" font-size="16">→</text>
+  <rect x="145" y="55" width="100" height="50" rx="6" fill="#6366f1" opacity="0.2" stroke="#6366f1" class="svg-pulse"/>
+  <text x="168" y="85" font-size="11">ECU logic</text>
+  <text x="250" y="82" font-size="16">→</text>
+  <rect x="270" y="55" width="110" height="50" rx="6" fill="#f59e0b" opacity="0.25" stroke="#d97706" class="svg-pulse"/>
+  <text x="285" y="85" font-size="11">Hydraulics</text>
+  <text x="385" y="82" font-size="16">→</text>
+  <rect x="405" y="55" width="100" height="50" rx="6" fill="#0b1220" opacity="0.12" stroke="#0b1220" class="svg-pulse"/>
+  <text x="425" y="85" font-size="11">Brake force</text>
+  <text x="510" y="82" font-size="16">→</text>
+  <rect x="530" y="55" width="90" height="50" rx="6" fill="#14b8a6" opacity="0.25" stroke="#0d9488" class="svg-pulse"/>
+  <text x="548" y="85" font-size="11">Wheel</text>
+  <path d="M575,105 L575,140 L70,140 L70,105" fill="none" stroke="#64748b" stroke-dasharray="4 3" class="svg-draw"/>
+  <text x="250" y="155" font-size="10" fill="#64748b">slip / speed feedback</text>
+</svg>
+<div class="diagram-caption">Figure: ABS as a high-rate mechatronic feedback loop.</div>
+</div>
+
+<h2>Case B — Autofocus and image stabilisation</h2>
+<p><strong>Need:</strong> sharp images despite subject distance changes and handshake. <strong>Sensors:</strong> contrast metrics from image sensor, phase-detect pixels, gyro/accelerometer for shake. <strong>Actuators:</strong> voice-coil motors (VCM) or piezoelectric elements moving lens groups; sometimes sensor-shift. <strong>Control:</strong> search or closed-loop focus; stabilisation uses feedforward from gyros plus feedback from position sensors on the lens barrel. <strong>Watch-outs:</strong> hunting in low contrast, thermal focus shift, latency between gyro and actuator.</p>
+
+<div class="worked reveal-up">
+<h3>Worked example — slip threshold intuition</h3>
+<p>If vehicle reference speed is 20&nbsp;m/s and a wheel speed drops to 14&nbsp;m/s, longitudinal slip ratio ≈ (20−14)/20 = 0.3. ABS aims to keep slip near values that still provide high friction — not zero rotation necessarily. Exact targets vary with surface estimation.</p>
+</div>
+
+<div class="callout reveal-up then">
+<strong class="label">Then vs now</strong>
+ABS began as analogue/early digital hydraulic modulation. Modern ESC stacks fuse IMU networks, steering feel actuators, and drive-by-wire torque vectoring on EVs.
+</div>
+
+<div class="terms-box reveal-up"><h3>Key terms</h3>
+<dl>
+<dt>Wheel slip</dt><dd>Normalised difference between vehicle and wheel speed.</dd>
+<dt>VCM</dt><dd>Voice-coil motor for fine lens motion.</dd>
+<dt>Plausibility check</dt><dd>Cross-sensor consistency test before trusting data.</dd>
+</dl></div>
+
+
+<!--expanded-->
+
+<h2>Shared lessons from both cases</h2>
+<p>Both ABS and camera AF/OIS demand low latency, careful filtering (not too much lag), and fault detection. Both blend feedforward (driver brake intent; gyro shake prediction) with feedback. Both degrade gracefully: ABS may revert to unmanaged brakes with warnings; cameras may disable OIS and rely on shorter exposure.</p>
+<p>As systems evolve to EVs and computational photography, the mechatronic spine remains. New actuators (regen blending; sensor-shift) attach to the same sense–decide–actuate narrative.</p>
+
+<!--dive-->
+
+<h2>Verification stories</h2>
+<p>ABS verification uses low-µ surfaces, split-µ, and sensor fault insertions. Camera OIS verification uses shaker tables and carefully lit focus charts. Both industries teach that scenario coverage beats single happy-path demos.</p>
+<p>Trace requirements to tests: each plausibility rule needs a fault-injection case. Untested diagnostics are décor.</p>
+<p>Field data feedback improves both systems — tyre variants and lens batches shift behaviour. Design update pipelines ethically and safely.</p>
+<p>Notice how both cases monetise reliability: liability and brand for brakes; image quality reputation for cameras.</p>
+<!--essay-->
+
+<h2>Extended studio notes — 07 case abs and camera</h2>
+<p>In professional mechatronics work, the ideas in this lesson show up less as isolated definitions and more as constraints that fight each other. Hard real-time sensing with fault detection is the shared DNA of both cases. When you write requirements, force numbers onto those constraints: sample rates, newton-metres, degrees Celsius, milliseconds of latency, millimetres of error. Vague adjectives hide trade-offs until tooling steel is already ordered.</p>
+<p>A useful studio habit is to keep a living “assumption list” beside your block diagram. Typical assumptions include linearity, constant temperature, perfect sampling clocks, infinite actuator authority, and noise-free sensors. Assuming perfect wheel radius makes spare-tyre scenarios dangerous for ABS. Crossing out an assumption should trigger either a model upgrade, a hardware change, or an explicit residual risk acceptance signed by someone accountable.</p>
+<p>Commissioning is where theory meets cable trays. Expect ground loops, mis-labelled I/O, incorrect engineering-unit scales, and mechanical binding that looks like a “software bug.” Camera AF hunting in low contrast needs timeouts and fallback focus distances. Bring an oscilloscope or drive trace tool early; bring a torque wrench and alignment dial indicator just as early. The mechatronic engineer who only debugs in an IDE will misclassify half of field faults.</p>
+<p>Documentation is part of the control system. Record firmware hashes, gain sets, mechanical revisions, and network topologies together. Future failure analysis needs that bundle. Trace each diagnostic to a test case in the verification matrix. If your organisation treats documents as after-the-fact paperwork, expect to rediscover tuning constants from scratch after every staff rotation.</p>
+<p>Finally, connect this lesson forward and backward in the course. Foundations without modern networks leave you unable to ship connected machines; modern buzzwords without foundations leave you unable to stabilise a simple loop. Modern ESC and computational photography extend these loops with richer sensors. Use the quizzes not as memorisation theatre but as prompts to redraw the diagrams from memory on paper — that retrieval practice builds the intuition you will need on a noisy factory floor.</p>
+<div class="worked reveal-up">
+<h3>Additional worked scenario</h3>
+<p>Slip s=(v−rω)/v. With v=15 m/s and rω=12 m/s, s=0.2. If the target slip band is 0.08–0.15 on that surface estimate, ABS should release/reapply toward the band — quantify rather than narrate “pumping brakes.”</p>
+</div>
+
+<form class="quiz reveal-up" data-quiz="07-case-abs-and-camera">
+<h3>Check your understanding</h3>
+<div class="quiz-q" data-answer="d">
+<div class="q-text">1. ABS primarily modulates:</div>
+<label><input type="radio" name="q1" value="a"> Cabin LED colour</label>
+<label><input type="radio" name="q1" value="b"> Radio volume</label>
+<label><input type="radio" name="q1" value="c"> Paint curing</label>
+<label><input type="radio" name="q1" value="d"> Brake pressure / force at wheels</label>
+<div class="explain">Hydraulic modulation.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">2. Slip ratio uses:</div>
+<label><input type="radio" name="q2" value="a"> Vehicle vs wheel speed difference (normalised)</label>
+<label><input type="radio" name="q2" value="b"> Only tyre colour</label>
+<label><input type="radio" name="q2" value="c"> Wi-Fi channels</label>
+<label><input type="radio" name="q2" value="d"> PLC seal-ins only</label>
+<div class="explain">Kinematic slip definition.</div>
+</div>
+
+<div class="quiz-q" data-answer="d">
+<div class="q-text">3. Camera OIS often uses:</div>
+<label><input type="radio" name="q3" value="a"> Only pneumatic cylinders</label>
+<label><input type="radio" name="q3" value="b"> Ladder timers alone</label>
+<label><input type="radio" name="q3" value="c"> Steam</label>
+<label><input type="radio" name="q3" value="d"> Gyro sensing + fine lens/sensor actuators</label>
+<div class="explain">Inertial + micro actuation.</div>
+</div>
+
+<div class="quiz-q" data-answer="d">
+<div class="q-text">4. Plausibility checks exist to:</div>
+<label><input type="radio" name="q4" value="a"> Increase backlash</label>
+<label><input type="radio" name="q4" value="b"> Remove CRC</label>
+<label><input type="radio" name="q4" value="c"> Skip estop</label>
+<label><input type="radio" name="q4" value="d"> Reject inconsistent sensor data</label>
+<div class="explain">Fault detection.</div>
+</div>
+
+<div class="quiz-q" data-answer="d">
+<div class="q-text">5. ESC extends ABS by:</div>
+<label><input type="radio" name="q5" value="a"> Only unlocking doors</label>
+<label><input type="radio" name="q5" value="b"> Replacing wheels with tracks always</label>
+<label><input type="radio" name="q5" value="c"> Deleting IMUs</label>
+<label><input type="radio" name="q5" value="d"> Yaw/lateral stability interventions</label>
+<div class="explain">Stability control family.</div>
+</div>
+
+<button type="submit" class="btn btn-primary">Submit answers</button>
+<div class="quiz-result"></div></form>
+<div class="lesson-footer">
+  <a class="btn btn-outline" href="07-mechatronic-design.html">← Previous</a>
+  <button type="button" class="btn btn-primary" id="mark-complete">Mark complete</button>
+  <a class="btn btn-secondary" href="07-case-cnc-and-appliance.html">Next →</a>
+</div>
+  </main>
+</div>
+</div>
+<script src="../js/course.js"></script>
+<script src="../js/motion.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frequency response & stability — Mechatronics Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/course.css">
+<link rel="stylesheet" href="../css/motion.css">
+</head>
+<body data-lesson="06-frequency-and-stability" data-base="lessons" data-prev="06-dynamics-and-transfer.html" data-next="06-closed-loop-and-pid.html">
+<div class="course-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html">Mechatronics <span>Studio</span></a>
+    <div class="sub">Deep Systems Course</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+<div class="main-wrap">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      <div class="topbar-title"><strong>Mechatronics Studio</strong> · Deep Systems</div>
+    </div>
+    <div class="progress-pill">
+      <span data-progress-pct>0%</span>
+      <div class="progress-bar"><div class="progress-bar-fill" data-progress-fill style="width:0%"></div></div>
+    </div>
+  </header>
+  <main class="content page-enter">
+<div class="lesson-meta">Module 6 — Models and control</div>
+<h1>Frequency response & stability</h1>
+
+<p>Frequency-domain thinking asks: if we excite the plant with sinusoids, how do gain and phase shift with frequency? Bode plots make margins visible.</p>
+
+<h2>Bode idea</h2>
+<p>Magnitude (dB) and phase (degrees) versus log frequency. Crossing 0&nbsp;dB with phase near −180° is dangerous. <strong>Gain margin</strong> and <strong>phase margin</strong> quantify distance from that brink.</p>
+
+<div class="diagram">
+<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+  <rect width="560" height="240" fill="#f8fafc"/>
+  <text x="20" y="24" font-family="IBM Plex Sans" font-size="12" fill="#64748b">Sketch Bode magnitude (illustrative)</text>
+  <line x1="60" y1="200" x2="520" y2="200" stroke="#0b1220" class="svg-draw"/>
+  <line x1="60" y1="200" x2="60" y2="40" stroke="#0b1220" class="svg-draw"/>
+  <text x="30" y="50" font-size="10">dB</text>
+  <text x="500" y="215" font-size="10">ω</text>
+  <path d="M80,80 L200,80 L320,120 L420,180 L500,195" fill="none" stroke="#14b8a6" stroke-width="2.5" class="svg-draw"/>
+  <line x1="60" y1="140" x2="520" y2="140" stroke="#64748b" stroke-dasharray="4 3"/>
+  <text x="70" y="135" font-size="10" fill="#64748b">0 dB</text>
+  <circle cx="360" cy="150" r="4" fill="#f59e0b" class="svg-pulse"/>
+  <text x="370" y="145" font-size="10" fill="#d97706">gain crossover</text>
+</svg>
+<div class="diagram-caption">Figure: Illustrative Bode magnitude with 0&nbsp;dB reference and gain crossover mark.</div>
+</div>
+
+<div class="worked reveal-up">
+<h3>Worked example — margin intuition</h3>
+<p>If at the gain crossover the phase is −120°, phase margin = 60° — generally comfortable for many loops. If phase is −170°, margin = 10° — expect overshoot and fragility to delay.</p>
+</div>
+
+<div class="callout reveal-up watch">
+<strong class="label">Watch-out</strong>
+Digital sampling and computation delay add phase lag that Bode analysis must include — ignoring delay is a classic instability source.
+</div>
+
+<div class="terms-box reveal-up"><h3>Key terms</h3>
+<dl>
+<dt>Phase margin</dt><dd>Additional phase lag tolerable at gain crossover before −180°.</dd>
+<dt>Gain margin</dt><dd>Factor by which gain may rise before instability at phase crossover.</dd>
+</dl></div>
+
+
+<!--expanded-->
+
+<h2>Loop shaping intuition</h2>
+<p>Engineers raise crossover for speed, then add lead (phase boost) or lag (low-frequency gain) to repair margins and steady-state error. Notch filters carve out resonances. Every filter adds phase lag somewhere — there is no free lunch.</p>
+<p>Nyquist’s criterion generalises Bode margins for tricky plants. For this course, internalise: stay away from the −1 point in the complex plane; margins quantify that distance in gain/phase language.</p>
+
+<!--dive-->
+
+<h2>Measuring margins on real hardware</h2>
+<p>Inject a perturbation and measure loop gain where safe, or use relay feedback experiments carefully. Many drives offer built-in Bode tools — learn them.</p>
+<p>Cable delays, filter delays, and computation delays stack. A 1 ms total delay at 50 Hz crossover costs about 18° phase — enough to ruin a thin margin.</p>
+<p>Nonlinear friction can make small-signal margins look fine while large moves chatter. Validate with representative amplitudes.</p>
+<p>Store Bode screenshots with firmware version and load condition; margins without context mislead the next engineer.</p>
+<!--essay-->
+
+<h2>Extended studio notes — 06 frequency and stability</h2>
+<p>In professional mechatronics work, the ideas in this lesson show up less as isolated definitions and more as constraints that fight each other. Margins are oxygen for uncertainty; spend them knowingly. When you write requirements, force numbers onto those constraints: sample rates, newton-metres, degrees Celsius, milliseconds of latency, millimetres of error. Vague adjectives hide trade-offs until tooling steel is already ordered.</p>
+<p>A useful studio habit is to keep a living “assumption list” beside your block diagram. Typical assumptions include linearity, constant temperature, perfect sampling clocks, infinite actuator authority, and noise-free sensors. Assuming analogue Bode equals digital loop ignores sample delay and holds. Crossing out an assumption should trigger either a model upgrade, a hardware change, or an explicit residual risk acceptance signed by someone accountable.</p>
+<p>Commissioning is where theory meets cable trays. Expect ground loops, mis-labelled I/O, incorrect engineering-unit scales, and mechanical binding that looks like a “software bug.” Notch filters that move with temperature need scheduled updates or wide notches. Bring an oscilloscope or drive trace tool early; bring a torque wrench and alignment dial indicator just as early. The mechatronic engineer who only debugs in an IDE will misclassify half of field faults.</p>
+<p>Documentation is part of the control system. Record firmware hashes, gain sets, mechanical revisions, and network topologies together. Future failure analysis needs that bundle. Archive margin plots with load and firmware metadata. If your organisation treats documents as after-the-fact paperwork, expect to rediscover tuning constants from scratch after every staff rotation.</p>
+<p>Finally, connect this lesson forward and backward in the course. Foundations without modern networks leave you unable to ship connected machines; modern buzzwords without foundations leave you unable to stabilise a simple loop. PID lead/lag design is loop shaping under another name. Use the quizzes not as memorisation theatre but as prompts to redraw the diagrams from memory on paper — that retrieval practice builds the intuition you will need on a noisy factory floor.</p>
+<div class="worked reveal-up">
+<h3>Additional worked scenario</h3>
+<p>Crossover 40 Hz with 0.8 ms delay ⇒ phase lag ≈ 360·40·0.0008=11.5°. If mechanical plant already leaves only 35° margin, delay eats a third of it — redesign compute or lower crossover.</p>
+</div>
+
+<!--boost-->
+
+<div class="callout reveal-up key">
+<strong class="label">Studio checkpoint</strong>
+Before you mark this lesson complete, sketch the primary diagram from memory, restate the worked numerical example with different numbers, and name one modern (2026) technology that extends the classical idea without deleting it. If you cannot do those three things, skim the Key terms and Then-vs-now callouts once more. Mechatronics rewards active recall more than passive scrolling: the machines you will commission will not pause while you search a textbook under pressure. Carry forward one concrete question into the next lesson — for example a timing budget, an error-budget line item, or a fault-policy choice — and resolve it explicitly when the next topic provides the missing piece.
+</div>
+
+<form class="quiz reveal-up" data-quiz="06-frequency-and-stability">
+<h3>Check your understanding</h3>
+<div class="quiz-q" data-answer="c">
+<div class="q-text">1. Phase margin is evaluated near:</div>
+<label><input type="radio" name="q1" value="a"> Only DC paint shops</label>
+<label><input type="radio" name="q1" value="b"> Hydraulic tank volume</label>
+<label><input type="radio" name="q1" value="c"> Gain crossover (≈0 dB)</label>
+<label><input type="radio" name="q1" value="d"> Quiz score</label>
+<div class="explain">Definition at gain crossover.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">2. Extra pure delay:</div>
+<label><input type="radio" name="q2" value="a"> Adds phase lag that can erase margins</label>
+<label><input type="radio" name="q2" value="b"> Always stabilises everything</label>
+<label><input type="radio" name="q2" value="c"> Removes poles</label>
+<label><input type="radio" name="q2" value="d"> Increases encoder CPR</label>
+<div class="explain">e^{-sT} phase.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">3. Bode magnitude uses:</div>
+<label><input type="radio" name="q3" value="a"> dB vs log frequency typically</label>
+<label><input type="radio" name="q3" value="b"> Only pie charts</label>
+<label><input type="radio" name="q3" value="c"> Strain only</label>
+<label><input type="radio" name="q3" value="d"> Ladder rungs</label>
+<div class="explain">Standard Bode axes.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">4. Small phase margin often means:</div>
+<label><input type="radio" name="q4" value="a"> Oscillatory / sensitive closed-loop behaviour</label>
+<label><input type="radio" name="q4" value="b"> Perfect flat response guaranteed</label>
+<label><input type="radio" name="q4" value="c"> No overshoot ever</label>
+<label><input type="radio" name="q4" value="d"> Infinite stiffness</label>
+<div class="explain">Near instability.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">5. 0 dB means:</div>
+<label><input type="radio" name="q5" value="a"> Unity gain</label>
+<label><input type="radio" name="q5" value="b"> Zero output forever</label>
+<label><input type="radio" name="q5" value="c"> Infinite gain</label>
+<label><input type="radio" name="q5" value="d"> No signal defined</label>
+<div class="explain">20 log10(|G|)=0 ⇒ |G|=1.</div>
+</div>
+
+<button type="submit" class="btn btn-primary">Submit answers</button>
+<div class="quiz-result"></div></form>
+<div class="lesson-footer">
+  <a class="btn btn-outline" href="06-dynamics-and-transfer.html">← Previous</a>
+  <button type="button" class="btn btn-primary" id="mark-complete">Mark complete</button>
+  <a class="btn btn-secondary" href="06-closed-loop-and-pid.html">Next →</a>
+</div>
+  </main>
+</div>
+</div>
+<script src="../js/course.js"></script>
+<script src="../js/motion.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mechatronic design — Mechatronics Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/course.css">
+<link rel="stylesheet" href="../css/motion.css">
+</head>
+<body data-lesson="07-mechatronic-design" data-base="lessons" data-prev="06-ai-in-mechatronics.html" data-next="07-case-abs-and-camera.html">
+<div class="course-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html">Mechatronics <span>Studio</span></a>
+    <div class="sub">Deep Systems Course</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+<div class="main-wrap">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      <div class="topbar-title"><strong>Mechatronics Studio</strong> · Deep Systems</div>
+    </div>
+    <div class="progress-pill">
+      <span data-progress-pct>0%</span>
+      <div class="progress-bar"><div class="progress-bar-fill" data-progress-fill style="width:0%"></div></div>
+    </div>
+  </header>
+  <main class="content page-enter">
+<div class="lesson-meta">Module 7 — Deep integrated systems</div>
+<h1>Mechatronic design</h1>
+
+<p>Mechatronic design is a process discipline as much as a component catalogue. The goal is a balanced architecture that meets requirements with acceptable risk, cost, and complexity.</p>
+
+<h2>Concurrent design and V-model-ish flow</h2>
+<p>Requirements decompose into system architecture, then subsystem specs, then component design — and verification ascends the other leg: unit tests, integration tests, system validation. Unlike pure software, hardware lead times force early frozen interfaces (mechanical envelopes, connector pinouts, network schedules).</p>
+
+<h2>Trade-offs</h2>
+<p>Stiffness vs mass vs actuator size. Analogue simplicity vs digital flexibility. Central PLC vs distributed smart drives. Each choice moves error sources between domains. Robotics is mechatronics under motion planning and safety constraints: kinematics, dynamics, sensing, and control co-designed with the mechanical structure.</p>
+
+<div class="callout reveal-up key">
+<strong class="label">Key idea</strong>
+Freeze interfaces deliberately. Undocumented “temporary” pin maps become permanent technical debt.
+</div>
+
+<div class="worked reveal-up">
+<h3>Worked example — trade space</h3>
+<p>Need ±0.1&nbsp;mm at 1&nbsp;m/s. Option A: heavy linear motor, high bandwidth, expensive. Option B: belt + cheap motor + precision linear encoder + feedforward. Option B wins if software and tuning skill exist; Option A wins if maintenance staff cannot support advanced control. Design is socio-technical.</p>
+</div>
+
+<div class="callout reveal-up then">
+<strong class="label">Then vs now</strong>
+Paper ICDs and waterfall still appear in regulated industries. Agile digital twins, MBSE, and continuous integration for firmware change the cadence — not the need for clear interfaces.
+</div>
+
+<div class="terms-box reveal-up"><h3>Key terms</h3>
+<dl>
+<dt>ICD</dt><dd>Interface control document.</dd>
+<dt>MBSE</dt><dd>Model-based systems engineering.</dd>
+<dt>Validation vs verification</dt><dd>Building the right system vs building the system right.</dd>
+</dl></div>
+
+
+<!--expanded-->
+
+<h2>Reviews and risk</h2>
+<p>Design reviews should attack interfaces: power budgets, timing budgets, error budgets, and fault trees. FMEA (failure mode and effects analysis) is not paperwork theatre when it changes sensing redundancy or software interlocks. Prototype early for unknown physics (friction, EMC, thermal); simulate early for known kinematics and logic.</p>
+<p>Robotics programmes add reachability, singularity avoidance, and collaborative risk assessments. The mechanism you draw in CAD is only half the robot; the other half is the sensing and software that make motion trustworthy.</p>
+
+<!--dive-->
+
+<h2>Prototyping ladder</h2>
+<p>Prototype sensing and actuation on a bench before freezing housings. EMC and thermal surprises hate late discovery.</p>
+<p>Use instrumented builds: temporary encoders, current probes, and thermocouples during bring-up even if production omits some of them.</p>
+<p>Maintain a decision log: why belt vs screw, why EtherCAT vs CANopen, why MCU vs PLC. Future you will forget.</p>
+<p>Plan manufacturing tolerances into the error budget early; designed-on-nominal systems fail at tolerance stack-up.</p>
+<!--essay-->
+
+<h2>Extended studio notes — 07 mechatronic design</h2>
+<p>In professional mechatronics work, the ideas in this lesson show up less as isolated definitions and more as constraints that fight each other. Interface freezes are kindness to the future integration team. When you write requirements, force numbers onto those constraints: sample rates, newton-metres, degrees Celsius, milliseconds of latency, millimetres of error. Vague adjectives hide trade-offs until tooling steel is already ordered.</p>
+<p>A useful studio habit is to keep a living “assumption list” beside your block diagram. Typical assumptions include linearity, constant temperature, perfect sampling clocks, infinite actuator authority, and noise-free sensors. Assuming CAD interference checks catch electrical EMC is a category error. Crossing out an assumption should trigger either a model upgrade, a hardware change, or an explicit residual risk acceptance signed by someone accountable.</p>
+<p>Commissioning is where theory meets cable trays. Expect ground loops, mis-labelled I/O, incorrect engineering-unit scales, and mechanical binding that looks like a “software bug.” Prototype instrumentation pays for itself the first time it reveals a real resonance. Bring an oscilloscope or drive trace tool early; bring a torque wrench and alignment dial indicator just as early. The mechatronic engineer who only debugs in an IDE will misclassify half of field faults.</p>
+<p>Documentation is part of the control system. Record firmware hashes, gain sets, mechanical revisions, and network topologies together. Future failure analysis needs that bundle. Decision logs prevent rediscovering rejected architectures every quarter. If your organisation treats documents as after-the-fact paperwork, expect to rediscover tuning constants from scratch after every staff rotation.</p>
+<p>Finally, connect this lesson forward and backward in the course. Foundations without modern networks leave you unable to ship connected machines; modern buzzwords without foundations leave you unable to stabilise a simple loop. Case studies next show the method applied end-to-end. Use the quizzes not as memorisation theatre but as prompts to redraw the diagrams from memory on paper — that retrieval practice builds the intuition you will need on a noisy factory floor.</p>
+<div class="worked reveal-up">
+<h3>Additional worked scenario</h3>
+<p>Error budget sketch: mechanics 30 µm, sensor 5 µm, quantisation 1 µm, control lag under load 20 µm ⇒ RSS ≈ 36 µm if independent-ish. Spec 50 µm OK with margin; spec 20 µm fails — redesign mechanics or sensing before tuning theatre.</p>
+</div>
+
+<!--boost-->
+
+<div class="callout reveal-up key">
+<strong class="label">Studio checkpoint</strong>
+Before you mark this lesson complete, sketch the primary diagram from memory, restate the worked numerical example with different numbers, and name one modern (2026) technology that extends the classical idea without deleting it. If you cannot do those three things, skim the Key terms and Then-vs-now callouts once more. Mechatronics rewards active recall more than passive scrolling: the machines you will commission will not pause while you search a textbook under pressure. Carry forward one concrete question into the next lesson — for example a timing budget, an error-budget line item, or a fault-policy choice — and resolve it explicitly when the next topic provides the missing piece.
+</div>
+
+<form class="quiz reveal-up" data-quiz="07-mechatronic-design">
+<h3>Check your understanding</h3>
+<div class="quiz-q" data-answer="c">
+<div class="q-text">1. Concurrent design emphasises:</div>
+<label><input type="radio" name="q1" value="a"> Never talking across teams</label>
+<label><input type="radio" name="q1" value="b"> Only painting last</label>
+<label><input type="radio" name="q1" value="c"> Early multi-domain decisions</label>
+<label><input type="radio" name="q1" value="d"> Skipping requirements</label>
+<div class="explain">Joint early choices.</div>
+</div>
+
+<div class="quiz-q" data-answer="b">
+<div class="q-text">2. V-model ascending leg is mainly:</div>
+<label><input type="radio" name="q2" value="a"> Ignoring tests</label>
+<label><input type="radio" name="q2" value="b"> Integration and verification/validation</label>
+<label><input type="radio" name="q2" value="c"> Buying random parts</label>
+<label><input type="radio" name="q2" value="d"> Deleting ICDs</label>
+<div class="explain">Test against specs upward.</div>
+</div>
+
+<div class="quiz-q" data-answer="d">
+<div class="q-text">3. Robotics as mechatronics adds:</div>
+<label><input type="radio" name="q3" value="a"> Only marketing slides</label>
+<label><input type="radio" name="q3" value="b"> No control theory</label>
+<label><input type="radio" name="q3" value="c"> Mandatory steam</label>
+<label><input type="radio" name="q3" value="d"> Kinematics/planning/safety with sensing and actuation</label>
+<div class="explain">Full stack motion systems.</div>
+</div>
+
+<div class="quiz-q" data-answer="b">
+<div class="q-text">4. Interface freezes matter because:</div>
+<label><input type="radio" name="q4" value="a"> Fonts change weekly</label>
+<label><input type="radio" name="q4" value="b"> Hardware lead times and integration risk</label>
+<label><input type="radio" name="q4" value="c"> Oil is blue</label>
+<label><input type="radio" name="q4" value="d"> Quizzes need SVG</label>
+<div class="explain">Late pin changes hurt.</div>
+</div>
+
+<div class="quiz-q" data-answer="b">
+<div class="q-text">5. Verification asks:</div>
+<label><input type="radio" name="q5" value="a"> Is the logo pretty?</label>
+<label><input type="radio" name="q5" value="b"> Did we meet the specified design correctly?</label>
+<label><input type="radio" name="q5" value="c"> Can we skip sensors?</label>
+<label><input type="radio" name="q5" value="d"> Is delay infinite?</label>
+<div class="explain">Build the system right.</div>
+</div>
+
+<button type="submit" class="btn btn-primary">Submit answers</button>
+<div class="quiz-result"></div></form>
+<div class="lesson-footer">
+  <a class="btn btn-outline" href="06-ai-in-mechatronics.html">← Previous</a>
+  <button type="button" class="btn btn-primary" id="mark-complete">Mark complete</button>
+  <a class="btn btn-secondary" href="07-case-abs-and-camera.html">Next →</a>
+</div>
+  </main>
+</div>
+</div>
+<script src="../js/course.js"></script>
+<script src="../js/motion.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Displacement, motion & force — Mechatronics Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/course.css">
+<link rel="stylesheet" href="../css/motion.css">
+</head>
+<body data-lesson="02-displacement-motion-force" data-base="lessons" data-prev="02-sensors-and-transducers.html" data-next="02-process-sensors.html">
+<div class="course-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html">Mechatronics <span>Studio</span></a>
+    <div class="sub">Deep Systems Course</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+<div class="main-wrap">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      <div class="topbar-title"><strong>Mechatronics Studio</strong> · Deep Systems</div>
+    </div>
+    <div class="progress-pill">
+      <span data-progress-pct>0%</span>
+      <div class="progress-bar"><div class="progress-bar-fill" data-progress-fill style="width:0%"></div></div>
+    </div>
+  </header>
+  <main class="content page-enter">
+<div class="lesson-meta">Module 2 — Sensing the physical world</div>
+<h1>Displacement, motion & force</h1>
+
+<p>Position, velocity, acceleration, and force are the motion-domain quantities that dominate robotics, CNC, vehicles, and packaging machines. Sensor choice trades resolution, bandwidth, environment, and cost.</p>
+
+<h2>Displacement and position</h2>
+<ul>
+<li><strong>Potentiometric</strong> — resistive divider; simple, contact wear, limited life.</li>
+<li><strong>LVDT</strong> — linear variable differential transformer; robust, analogue AC excitation, excellent resolution.</li>
+<li><strong>Encoders</strong> — incremental (A/B pulses, needs homing) or absolute (unique code per position). Optical and magnetic variants.</li>
+<li><strong>Proximity</strong> — inductive (metals), capacitive (many materials), optical (beam/reflect), Hall-effect (magnetic).</li>
+</ul>
+
+<h2>Velocity and acceleration</h2>
+<p>Tachogenerators produce voltage proportional to speed. Differentiating encoder position yields velocity but amplifies quantisation noise — often filtered or observed. Accelerometers (now usually MEMS) measure proper acceleration; useful for vibration, inertial navigation aids, and impact detection.</p>
+
+<h2>Force and strain</h2>
+<p>Metallic strain gauges change resistance with strain; in a <strong>Wheatstone bridge</strong> they yield a measurable differential voltage. Load cells arrange gauges on a metal element calibrated for force. Torque sensors use similar ideas on shafts.</p>
+
+<div class="diagram">
+<svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="220" fill="#f8fafc"/>
+  <text x="20" y="24" font-family="IBM Plex Sans" font-size="12" fill="#64748b">Wheatstone bridge (strain)</text>
+  <line x1="200" y1="50" x2="120" y2="100" stroke="#0b1220" stroke-width="2" class="svg-draw"/>
+  <line x1="200" y1="50" x2="280" y2="100" stroke="#0b1220" stroke-width="2" class="svg-draw"/>
+  <line x1="120" y1="100" x2="200" y2="150" stroke="#0b1220" stroke-width="2"/>
+  <line x1="280" y1="100" x2="200" y2="150" stroke="#0b1220" stroke-width="2"/>
+  <circle cx="200" cy="50" r="4" fill="#14b8a6" class="svg-pulse"/>
+  <circle cx="200" cy="150" r="4" fill="#14b8a6" class="svg-bob"/>
+  <circle cx="120" cy="100" r="4" fill="#f59e0b" class="svg-pulse"/>
+  <circle cx="280" cy="100" r="4" fill="#f59e0b" class="svg-bob"/>
+  <text x="190" y="40" font-size="11">+Vs</text>
+  <text x="190" y="170" font-size="11">GND</text>
+  <text x="70" y="105" font-size="11">R1</text>
+  <text x="300" y="105" font-size="11">R2</text>
+  <text x="95" y="140" font-size="11">R3</text>
+  <text x="270" y="140" font-size="11">R4</text>
+  <line x1="120" y1="100" x2="90" y2="100" stroke="#6366f1" stroke-width="1.5" class="svg-flow"/>
+  <line x1="280" y1="100" x2="310" y2="100" stroke="#6366f1" stroke-width="1.5" class="svg-flow"/>
+  <text x="40" y="95" font-size="11" fill="#6366f1">Vout+</text>
+  <text x="315" y="95" font-size="11" fill="#6366f1">Vout−</text>
+</svg>
+<div class="diagram-caption">Figure: Wheatstone bridge used with strain gauges for force sensing.</div>
+</div>
+
+<div class="worked reveal-up">
+<h3>Worked example — encoder resolution</h3>
+<p>A rotary encoder has 2500 lines/rev and quadrature decoding (×4), so 10&nbsp;000 counts/rev. On a 10&nbsp;mm lead screw (10&nbsp;mm travel per rev), linear resolution = 10&nbsp;mm / 10&nbsp;000 = 0.001&nbsp;mm = 1&nbsp;µm/count (ideal). Backlash and compliance still limit real accuracy.</p>
+</div>
+
+<div class="callout reveal-up then">
+<strong class="label">Then vs now</strong>
+Potentiometers and tachos remain teaching staples; production robots lean on absolute encoders, multi-turn batteries or energy harvesting, and MEMS IMUs fused with vision (Module 8).
+</div>
+
+<div class="terms-box reveal-up"><h3>Key terms</h3>
+<dl>
+<dt>LVDT</dt><dd>AC inductive linear position transducer.</dd>
+<dt>Incremental encoder</dt><dd>Relative pulses; requires reference homing.</dd>
+<dt>Strain gauge</dt><dd>Resistance element sensing surface strain.</dd>
+</dl></div>
+
+
+<!--expanded-->
+
+<h2>Choosing among position technologies</h2>
+<p>Dirty environments favour inductive proximity and magnetic encoders over optical disks. Long travel with fine resolution often needs tape scales or laser interferometry in metrology labs — far beyond a pot. Absolute multi-turn encoders remove homing cycles that slow machine start-up after power loss.</p>
+<p>Force control needs either a dedicated force/torque sensor or an observer based on motor current and a friction model. Current-based “force” is cheap but confounds friction, gravity, and acceleration. Collaborative robots invest in joint torque sensing precisely because skin-safe interaction needs better than current estimates.</p>
+
+<!--dive-->
+
+<h2>Motion sensing in closed loops</h2>
+<p>Encoder mounting eccentricity creates once-per-revolution position error that looks like a mechanical defect. Flexible couplings help alignment but add torsion compliance that interacts with control gains. Rigid couplings demand better shaft alignment.</p>
+<p>For linear stages, deciding between rotary encoder on the screw versus linear scale on the load is a mechatronic classic: the scale measures what you care about but costs more and needs protection; the rotary encoder is cheaper and blind to backlash.</p>
+<p>Accelerometers for vibration trip systems need careful mounting resonance. A sensor on a floppy bracket measures bracket modes, not bearing health. Stud mount and manufacturer torque specs matter.</p>
+<p>Load cells in dynamic applications need fatigue ratings and overload stops. Static calibration does not prove life under cyclic cutting forces.</p>
+<!--essay-->
+
+<h2>Extended studio notes — 02 displacement motion force</h2>
+<p>In professional mechatronics work, the ideas in this lesson show up less as isolated definitions and more as constraints that fight each other. The best encoder on a soft structure still reports a shaking machine. When you write requirements, force numbers onto those constraints: sample rates, newton-metres, degrees Celsius, milliseconds of latency, millimetres of error. Vague adjectives hide trade-offs until tooling steel is already ordered.</p>
+<p>A useful studio habit is to keep a living “assumption list” beside your block diagram. Typical assumptions include linearity, constant temperature, perfect sampling clocks, infinite actuator authority, and noise-free sensors. Assuming infinite shaft stiffness makes observers lie about load torque. Crossing out an assumption should trigger either a model upgrade, a hardware change, or an explicit residual risk acceptance signed by someone accountable.</p>
+<p>Commissioning is where theory meets cable trays. Expect ground loops, mis-labelled I/O, incorrect engineering-unit scales, and mechanical binding that looks like a “software bug.” Quadrature decode errors from noise look like teleporting axes. Bring an oscilloscope or drive trace tool early; bring a torque wrench and alignment dial indicator just as early. The mechatronic engineer who only debugs in an IDE will misclassify half of field faults.</p>
+<p>Documentation is part of the control system. Record firmware hashes, gain sets, mechanical revisions, and network topologies together. Future failure analysis needs that bundle. Absolute encoders reduce homing choreography that operators get wrong after E-stops. If your organisation treats documents as after-the-fact paperwork, expect to rediscover tuning constants from scratch after every staff rotation.</p>
+<p>Finally, connect this lesson forward and backward in the course. Foundations without modern networks leave you unable to ship connected machines; modern buzzwords without foundations leave you unable to stabilise a simple loop. FOC drives later will consume these feedback choices directly. Use the quizzes not as memorisation theatre but as prompts to redraw the diagrams from memory on paper — that retrieval practice builds the intuition you will need on a noisy factory floor.</p>
+<div class="worked reveal-up">
+<h3>Additional worked scenario</h3>
+<p>A 17-bit absolute encoder has 131072 counts/rev. On a 8 mm lead screw, linear quantisation is 8 mm/131072 ≈ 0.061 µm/count — far below typical mechanical error. Spending more bits without stiffening the stage yields spreadsheet vanity.</p>
+</div>
+
+<form class="quiz reveal-up" data-quiz="02-displacement-motion-force">
+<h3>Check your understanding</h3>
+<div class="quiz-q" data-answer="d">
+<div class="q-text">1. An incremental encoder typically needs:</div>
+<label><input type="radio" name="q1" value="a"> No power</label>
+<label><input type="radio" name="q1" value="b"> Hydraulics</label>
+<label><input type="radio" name="q1" value="c"> Only Bluetooth</label>
+<label><input type="radio" name="q1" value="d"> A homing/reference event for absolute knowledge</label>
+<div class="explain">Increments are relative until referenced.</div>
+</div>
+
+<div class="quiz-q" data-answer="b">
+<div class="q-text">2. LVDT sensing is based on:</div>
+<label><input type="radio" name="q2" value="a"> Optical slots only</label>
+<label><input type="radio" name="q2" value="b"> Differential transformer coupling</label>
+<label><input type="radio" name="q2" value="c"> Piezo buzzers</label>
+<label><input type="radio" name="q2" value="d"> Ladder logic</label>
+<div class="explain">AC excited differential transformer.</div>
+</div>
+
+<div class="quiz-q" data-answer="c">
+<div class="q-text">3. Strain gauges often use a bridge to:</div>
+<label><input type="radio" name="q3" value="a"> Generate hydraulic flow</label>
+<label><input type="radio" name="q3" value="b"> Replace encoders always</label>
+<label><input type="radio" name="q3" value="c"> Convert small ΔR into a differential voltage</label>
+<label><input type="radio" name="q3" value="d"> Heat the sample</label>
+<div class="explain">Wheatstone bridge amplifies resistance change effect.</div>
+</div>
+
+<div class="quiz-q" data-answer="d">
+<div class="q-text">4. Inductive proximity sensors prefer:</div>
+<label><input type="radio" name="q4" value="a"> Any plastic</label>
+<label><input type="radio" name="q4" value="b"> Only transparent glass</label>
+<label><input type="radio" name="q4" value="c"> Vacuum only</label>
+<label><input type="radio" name="q4" value="d"> Metallic targets</label>
+<div class="explain">Eddy-current / magnetic effects with metals.</div>
+</div>
+
+<div class="quiz-q" data-answer="b">
+<div class="q-text">5. Quadrature ×4 on 2500 lines yields:</div>
+<label><input type="radio" name="q5" value="a"> 625 counts</label>
+<label><input type="radio" name="q5" value="b"> 10000 counts per rev</label>
+<label><input type="radio" name="q5" value="c"> 2500 counts</label>
+<label><input type="radio" name="q5" value="d"> 4 counts total</label>
+<div class="explain">4 edges per line × 2500.</div>
+</div>
+
+<button type="submit" class="btn btn-primary">Submit answers</button>
+<div class="quiz-result"></div></form>
+<div class="lesson-footer">
+  <a class="btn btn-outline" href="02-sensors-and-transducers.html">← Previous</a>
+  <button type="button" class="btn btn-primary" id="mark-complete">Mark complete</button>
+  <a class="btn btn-secondary" href="02-process-sensors.html">Next →</a>
+</div>
+  </main>
+</div>
+</div>
+<script src="../js/course.js"></script>
+<script src="../js/motion.js" defer></script>
+</body>
+</html>

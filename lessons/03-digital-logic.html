@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital logic — Mechatronics Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/course.css">
+<link rel="stylesheet" href="../css/motion.css">
+</head>
+<body data-lesson="03-digital-logic" data-base="lessons" data-prev="03-analogue-digital.html" data-next="03-data-presentation.html">
+<div class="course-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html">Mechatronics <span>Studio</span></a>
+    <div class="sub">Deep Systems Course</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+<div class="main-wrap">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      <div class="topbar-title"><strong>Mechatronics Studio</strong> · Deep Systems</div>
+    </div>
+    <div class="progress-pill">
+      <span data-progress-pct>0%</span>
+      <div class="progress-bar"><div class="progress-bar-fill" data-progress-fill style="width:0%"></div></div>
+    </div>
+  </header>
+  <main class="content page-enter">
+<div class="lesson-meta">Module 3 — Digital information</div>
+<h1>Digital logic</h1>
+
+<p>Before microcontrollers ate everything, and still inside FPGAs and glue logic, <strong>digital logic</strong> expresses decisions as Boolean functions of bits.</p>
+
+<h2>Gates and combinational logic</h2>
+<p>AND, OR, NOT, NAND, NOR, XOR combine present inputs into present outputs with no memory. Applications: interlocks (enable motion only if guard closed AND not-estop), multiplexers, adders, comparators.</p>
+
+<h2>Sequential logic</h2>
+<p>Flip-flops store state. Clocked systems evolve on edges. Counters, shift registers, and finite-state machines (FSMs) implement sequential control in hardware.</p>
+
+<h2>Boolean algebra and Karnaugh maps (original mini-example)</h2>
+<p>Suppose outputs should energise a pump when (level_low AND NOT overtemp) OR manual_override. Minimising gate count with a Karnaugh map is textbook technique; in software you write the Boolean directly and prefer clarity over gate savings — but the algebra still helps prove interlocks.</p>
+
+<div class="diagram">
+<svg viewBox="0 0 480 160" xmlns="http://www.w3.org/2000/svg">
+  <rect width="480" height="160" fill="#f8fafc"/>
+  <text x="20" y="24" font-family="IBM Plex Sans" font-size="12" fill="#64748b">Combinational interlock sketch</text>
+  <rect x="20" y="50" width="70" height="36" rx="4" fill="#e0e7ff" stroke="#6366f1" class="svg-pulse"/>
+  <text x="30" y="73" font-size="11">guard</text>
+  <rect x="20" y="100" width="70" height="36" rx="4" fill="#e0e7ff" stroke="#6366f1" class="svg-pulse"/>
+  <text x="28" y="123" font-size="11">¬estop</text>
+  <rect x="130" y="75" width="60" height="40" rx="4" fill="#14b8a6" opacity="0.3" stroke="#0d9488" class="svg-pulse"/>
+  <text x="145" y="100" font-size="12">AND</text>
+  <path d="M90,68 L130,88" stroke="#0b1220" stroke-width="1.5" class="svg-draw"/>
+  <path d="M90,118 L130,102" stroke="#0b1220" stroke-width="1.5" class="svg-flow"/>
+  <text x="200" y="100" font-size="16">→</text>
+  <rect x="230" y="75" width="90" height="40" rx="4" fill="#f59e0b" opacity="0.25" stroke="#d97706" class="svg-pulse"/>
+  <text x="248" y="100" font-size="11">motion_en</text>
+</svg>
+<div class="diagram-caption">Figure: Simple combinational enable — both guard and not-estop required.</div>
+</div>
+
+<div class="worked reveal-up">
+<h3>Worked example — FSM snippet</h3>
+<p>States: IDLE → RUN → FAULT. Transition IDLE→RUN if start AND healthy. RUN→FAULT if fault. FAULT→IDLE if reset AND healthy. This is the same structure you will see in PLC sequential designs and in ROS 2 lifecycle nodes later.</p>
+</div>
+
+<div class="terms-box reveal-up"><h3>Key terms</h3>
+<dl>
+<dt>Combinational</dt><dd>Output depends only on current inputs.</dd>
+<dt>Sequential</dt><dd>Output depends on inputs and stored state.</dd>
+<dt>FSM</dt><dd>Finite-state machine.</dd>
+</dl></div>
+
+
+<!--expanded-->
+
+<h2>From gates to safety logic</h2>
+<p>Even in MCU-centric designs, discrete logic and safety relays still implement estop chains that must not depend on the application firmware alone. Dual-channel inputs, cross-monitoring, and pulse tests detect stuck-at faults. Understanding combinational and sequential logic helps you read safety PLC function blocks without treating them as magic.</p>
+<p>State machines should be total: every state defines behaviour for every relevant input class, including faults. Partial FSMs that “cannot happen” are where machines surprise operators.</p>
+
+<!--dive-->
+
+<h2>Timing analysis and metastability awareness</h2>
+<p>Even high-level PLC programmers benefit from knowing that asynchronous inputs into clocked domains risk metastability. Double synchronisers on digital inputs are standard practice in FPGA and MCU GPIO design.</p>
+<p>Debouncing is sequential logic in spirit: ignore changes shorter than a time threshold. Apply it to mechanical switches; do not debounce encoder channels or you will lose counts.</p>
+<p>Combinational hazards (glitches) can strobe edge-sensitive inputs unexpectedly. In relay logic, contact races caused similar ghosts. Structured design and one-way interlocking reduce race conditions.</p>
+<p>When translating ladder to structured text, preserve clarity of interlocks. Clever Boolean compression that obscures the safety story is a negative achievement.</p>
+<!--essay-->
+
+<h2>Extended studio notes — 03 digital logic</h2>
+<p>In professional mechatronics work, the ideas in this lesson show up less as isolated definitions and more as constraints that fight each other. Interlocks are Boolean stories that must remain readable under stress. When you write requirements, force numbers onto those constraints: sample rates, newton-metres, degrees Celsius, milliseconds of latency, millimetres of error. Vague adjectives hide trade-offs until tooling steel is already ordered.</p>
+<p>A useful studio habit is to keep a living “assumption list” beside your block diagram. Typical assumptions include linearity, constant temperature, perfect sampling clocks, infinite actuator authority, and noise-free sensors. Assuming impossible states never occur is how illegal combinations energise actuators. Crossing out an assumption should trigger either a model upgrade, a hardware change, or an explicit residual risk acceptance signed by someone accountable.</p>
+<p>Commissioning is where theory meets cable trays. Expect ground loops, mis-labelled I/O, incorrect engineering-unit scales, and mechanical binding that looks like a “software bug.” Asynchronous switches into clocked logic need synchronisers; PLC inputs hide some of this. Bring an oscilloscope or drive trace tool early; bring a torque wrench and alignment dial indicator just as early. The mechatronic engineer who only debugs in an IDE will misclassify half of field faults.</p>
+<p>Documentation is part of the control system. Record firmware hashes, gain sets, mechanical revisions, and network topologies together. Future failure analysis needs that bundle. Safety relay wiring still implements the same AND/OR discipline in metal. If your organisation treats documents as after-the-fact paperwork, expect to rediscover tuning constants from scratch after every staff rotation.</p>
+<p>Finally, connect this lesson forward and backward in the course. Foundations without modern networks leave you unable to ship connected machines; modern buzzwords without foundations leave you unable to stabilise a simple loop. State machines reappear in ROS 2 lifecycles and PLC SFCs. Use the quizzes not as memorisation theatre but as prompts to redraw the diagrams from memory on paper — that retrieval practice builds the intuition you will need on a noisy factory floor.</p>
+<div class="worked reveal-up">
+<h3>Additional worked scenario</h3>
+<p>Enable motion only if guard_closed AND NOT estop AND hydraulic_pressure_ok AND mode_auto. Implement as a single combinational enable in one place; duplicating partial checks across rungs guarantees divergence after edits.</p>
+</div>
+
+<!--boost-->
+
+<div class="callout reveal-up key">
+<strong class="label">Studio checkpoint</strong>
+Before you mark this lesson complete, sketch the primary diagram from memory, restate the worked numerical example with different numbers, and name one modern (2026) technology that extends the classical idea without deleting it. If you cannot do those three things, skim the Key terms and Then-vs-now callouts once more. Mechatronics rewards active recall more than passive scrolling: the machines you will commission will not pause while you search a textbook under pressure. Carry forward one concrete question into the next lesson — for example a timing budget, an error-budget line item, or a fault-policy choice — and resolve it explicitly when the next topic provides the missing piece.
+</div>
+
+<form class="quiz reveal-up" data-quiz="03-digital-logic">
+<h3>Check your understanding</h3>
+<div class="quiz-q" data-answer="a">
+<div class="q-text">1. Combinational logic has:</div>
+<label><input type="radio" name="q1" value="a"> No memory of past inputs</label>
+<label><input type="radio" name="q1" value="b"> Infinite RAM</label>
+<label><input type="radio" name="q1" value="c"> Only analogue integrators</label>
+<label><input type="radio" name="q1" value="d"> Mandatory Ethernet</label>
+<div class="explain">No state storage.</div>
+</div>
+
+<div class="quiz-q" data-answer="b">
+<div class="q-text">2. A flip-flop provides:</div>
+<label><input type="radio" name="q2" value="a"> Hydraulic flow</label>
+<label><input type="radio" name="q2" value="b"> Bit storage / state</label>
+<label><input type="radio" name="q2" value="c"> Strain gauge bridge</label>
+<label><input type="radio" name="q2" value="d"> Nyquist filtering only</label>
+<div class="explain">Sequential building block.</div>
+</div>
+
+<div class="quiz-q" data-answer="d">
+<div class="q-text">3. AND interlock for motion_en:</div>
+<label><input type="radio" name="q3" value="a"> Any single true input enough</label>
+<label><input type="radio" name="q3" value="b"> Ignores estop</label>
+<label><input type="radio" name="q3" value="c"> Replaces sensors</label>
+<label><input type="radio" name="q3" value="d"> All required safety conditions true</label>
+<div class="explain">AND requires all inputs asserted.</div>
+</div>
+
+<div class="quiz-q" data-answer="b">
+<div class="q-text">4. Karnaugh maps help:</div>
+<label><input type="radio" name="q4" value="a"> Tune PID Kp</label>
+<label><input type="radio" name="q4" value="b"> Minimise Boolean expressions</label>
+<label><input type="radio" name="q4" value="c"> Select gearbox oil</label>
+<label><input type="radio" name="q4" value="d"> Calibrate RTDs</label>
+<div class="explain">Classical Boolean minimisation tool.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">5. FAULT→IDLE should usually require:</div>
+<label><input type="radio" name="q5" value="a"> Explicit reset and healthy conditions</label>
+<label><input type="radio" name="q5" value="b"> Nothing</label>
+<label><input type="radio" name="q5" value="c"> Random timers only</label>
+<label><input type="radio" name="q5" value="d"> Deleting logs</label>
+<div class="explain">Safe recovery needs acknowledgement.</div>
+</div>
+
+<button type="submit" class="btn btn-primary">Submit answers</button>
+<div class="quiz-result"></div></form>
+<div class="lesson-footer">
+  <a class="btn btn-outline" href="03-analogue-digital.html">← Previous</a>
+  <button type="button" class="btn btn-primary" id="mark-complete">Mark complete</button>
+  <a class="btn btn-secondary" href="03-data-presentation.html">Next →</a>
+</div>
+  </main>
+</div>
+</div>
+<script src="../js/course.js"></script>
+<script src="../js/motion.js" defer></script>
+</body>
+</html>

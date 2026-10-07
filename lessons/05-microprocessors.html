@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microprocessors & MCUs — Mechatronics Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/course.css">
+<link rel="stylesheet" href="../css/motion.css">
+</head>
+<body data-lesson="05-microprocessors" data-base="lessons" data-prev="04-electrical-actuation.html" data-next="05-c-and-embedded.html">
+<div class="course-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html">Mechatronics <span>Studio</span></a>
+    <div class="sub">Deep Systems Course</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+<div class="main-wrap">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      <div class="topbar-title"><strong>Mechatronics Studio</strong> · Deep Systems</div>
+    </div>
+    <div class="progress-pill">
+      <span data-progress-pct>0%</span>
+      <div class="progress-bar"><div class="progress-bar-fill" data-progress-fill style="width:0%"></div></div>
+    </div>
+  </header>
+  <main class="content page-enter">
+<div class="lesson-meta">Module 5 — Embedded brains</div>
+<h1>Microprocessors & MCUs</h1>
+
+<p>The “brain” of many mechatronic products is a programmable digital computer on a chip. Distinguishing <strong>microprocessors (MPU)</strong> from <strong>microcontrollers (MCU)</strong> clarifies architecture choices.</p>
+
+<h2>MPU vs MCU</h2>
+<p>An MPU is a CPU that typically relies on external memory and peripherals (think application processors). An MCU integrates CPU, flash/RAM, timers, ADC, UART, and GPIO on one die — ideal for embedded control. System-on-chips blur lines further with Linux-capable cores beside real-time MCUs.</p>
+
+<h2>Memory and I/O</h2>
+<p>Flash stores programmes; SRAM holds variables; EEPROM/FRAM may hold calibration. I/O includes GPIO, PWM, ADC/DAC, and communications. Interrupts and DMA keep hard real-time responses feasible without busy-waiting everything.</p>
+
+<h2>Programming levels</h2>
+<p>From machine code and assembly, through C/C++, to model-generated code and higher-level scripting on SBCs. Closer to the metal means tighter timing control; higher levels mean faster feature development — pick based on safety and deadlines.</p>
+
+<div class="callout reveal-up key">
+<strong class="label">Key idea</strong>
+Embedded success is less about FLOPS and more about deterministic I/O, power, and surviving the electrical environment.
+</div>
+
+<div class="worked reveal-up">
+<h3>Worked example — interrupt latency budget</h3>
+<p>A wheel-speed edge must be timestamped within 20&nbsp;µs. If interrupt entry takes 2&nbsp;µs, ISR work 5&nbsp;µs, and worst-case higher-priority interference 8&nbsp;µs, margin remains 5&nbsp;µs — acceptable. Add USB stack jitter without priority design and the budget collapses.</p>
+</div>
+
+<div class="callout reveal-up then">
+<strong class="label">Then vs now</strong>
+8-bit 8051-class parts taught a generation. Today mixed Cortex-M, RISC-V, and Linux SBCs coexist; safety cores and lockstep CPUs appear in automotive and industrial drives.
+</div>
+
+<div class="terms-box reveal-up"><h3>Key terms</h3>
+<dl>
+<dt>MCU</dt><dd>Microcontroller with integrated memory/peripherals.</dd>
+<dt>ISR</dt><dd>Interrupt service routine.</dd>
+<dt>DMA</dt><dd>Direct memory access — data movement without CPU copying each byte.</dd>
+</dl></div>
+
+
+<!--expanded-->
+
+<h2>Memory maps, boot, and safety cores</h2>
+<p>Embedded systems fail at boot as often as in steady run: clock trees, brown-out resets, and misconfigured pins. A robust design defines safe defaults on reset (outputs de-energised) before software finishes initialising. Watchdogs should be hardware-backed.</p>
+<p>Automotive and industrial MCUs may include lockstep cores or separate safety islands. Application code on a rich core coexists with a simpler certified kernel monitoring timeouts and I/O plausibility — architecture you will meet again in safety PLCs.</p>
+
+<!--dive-->
+
+<h2>Peripheral priorities for mechatronics</h2>
+<p>Prefer MCUs with enough independent timers for PWM and input capture, ADC with DMA, and hardware CRC for communications. “Faster CPU” rarely fixes missing timer blocks.</p>
+<p>Power architecture: brown-out detection thresholds must sit above the voltage where ADC references and flash writes become unreliable. Sequence enables so drivers stay off until configurations complete.</p>
+<p>Bootloaders enable field updates — and enable bricking if power fails mid-write. Dual-bank flash or A/B images are worth the pins for products that update.</p>
+<p>Security: debug ports left open on production boards are an attack path. Plan lifecycle disablement.</p>
+<!--essay-->
+
+<h2>Extended studio notes — 05 microprocessors</h2>
+<p>In professional mechatronics work, the ideas in this lesson show up less as isolated definitions and more as constraints that fight each other. Deterministic peripherals beat raw MHz for most control products. When you write requirements, force numbers onto those constraints: sample rates, newton-metres, degrees Celsius, milliseconds of latency, millimetres of error. Vague adjectives hide trade-offs until tooling steel is already ordered.</p>
+<p>A useful studio habit is to keep a living “assumption list” beside your block diagram. Typical assumptions include linearity, constant temperature, perfect sampling clocks, infinite actuator authority, and noise-free sensors. Assuming reset leaves outputs safe without hardware defaults risks glitch pulses. Crossing out an assumption should trigger either a model upgrade, a hardware change, or an explicit residual risk acceptance signed by someone accountable.</p>
+<p>Commissioning is where theory meets cable trays. Expect ground loops, mis-labelled I/O, incorrect engineering-unit scales, and mechanical binding that looks like a “software bug.” DMA overruns silently drop samples; counters and assertions should catch them. Bring an oscilloscope or drive trace tool early; bring a torque wrench and alignment dial indicator just as early. The mechatronic engineer who only debugs in an IDE will misclassify half of field faults.</p>
+<p>Documentation is part of the control system. Record firmware hashes, gain sets, mechanical revisions, and network topologies together. Future failure analysis needs that bundle. Security of debug ports is part of embedded architecture in 2026. If your organisation treats documents as after-the-fact paperwork, expect to rediscover tuning constants from scratch after every staff rotation.</p>
+<p>Finally, connect this lesson forward and backward in the course. Foundations without modern networks leave you unable to ship connected machines; modern buzzwords without foundations leave you unable to stabilise a simple loop. Edge AI MCUs still need this I/O discipline underneath the model. Use the quizzes not as memorisation theatre but as prompts to redraw the diagrams from memory on paper — that retrieval practice builds the intuition you will need on a noisy factory floor.</p>
+<div class="worked reveal-up">
+<h3>Additional worked scenario</h3>
+<p>ISR budget: ADC end ISR 3 µs, encoder edge 2 µs, worst nested 8 µs, control task reservation 50 µs at 10 kHz (100 µs period). If ISRs consume 20 µs average, CPU loading from interrupts alone is 20% — leave margin for communications stacks.</p>
+</div>
+
+<form class="quiz reveal-up" data-quiz="05-microprocessors">
+<h3>Check your understanding</h3>
+<div class="quiz-q" data-answer="b">
+<div class="q-text">1. MCUs typically integrate:</div>
+<label><input type="radio" name="q1" value="a"> Only a bare CPU with no memory</label>
+<label><input type="radio" name="q1" value="b"> CPU + memory + peripherals on one chip</label>
+<label><input type="radio" name="q1" value="c"> Only hydraulic pumps</label>
+<label><input type="radio" name="q1" value="d"> Paper tape readers</label>
+<div class="explain">Integration defines MCUs.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">2. Flash memory mainly holds:</div>
+<label><input type="radio" name="q2" value="a"> Programme code (non-volatile)</label>
+<label><input type="radio" name="q2" value="b"> Only transient stack forever without power</label>
+<label><input type="radio" name="q2" value="c"> Compressed air</label>
+<label><input type="radio" name="q2" value="d"> Gear oil grade</label>
+<div class="explain">Non-volatile programme store.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">3. DMA helps by:</div>
+<label><input type="radio" name="q3" value="a"> Moving data without per-byte CPU copying</label>
+<label><input type="radio" name="q3" value="b"> Painting HMIs</label>
+<label><input type="radio" name="q3" value="c"> Increasing backlash</label>
+<label><input type="radio" name="q3" value="d"> Removing sensors</label>
+<div class="explain">Offloads transfers.</div>
+</div>
+
+<div class="quiz-q" data-answer="c">
+<div class="q-text">4. Determinism matters because:</div>
+<label><input type="radio" name="q4" value="a"> Fonts must be monospace</label>
+<label><input type="radio" name="q4" value="b"> Oil colour changes</label>
+<label><input type="radio" name="q4" value="c"> Control deadlines and sampling jitter affect stability/safety</label>
+<label><input type="radio" name="q4" value="d"> Quizzes need CSS</label>
+<div class="explain">Timing is part of the plant+controller.</div>
+</div>
+
+<div class="quiz-q" data-answer="b">
+<div class="q-text">5. Assembly vs C:</div>
+<label><input type="radio" name="q5" value="a"> C cannot touch registers ever</label>
+<label><input type="radio" name="q5" value="b"> Assembly always slower to write, finer control possible</label>
+<label><input type="radio" name="q5" value="c"> Assembly removes physics</label>
+<label><input type="radio" name="q5" value="d"> C forbids interrupts</label>
+<div class="explain">Trade productivity vs control.</div>
+</div>
+
+<button type="submit" class="btn btn-primary">Submit answers</button>
+<div class="quiz-result"></div></form>
+<div class="lesson-footer">
+  <a class="btn btn-outline" href="04-electrical-actuation.html">← Previous</a>
+  <button type="button" class="btn btn-primary" id="mark-complete">Mark complete</button>
+  <a class="btn btn-secondary" href="05-c-and-embedded.html">Next →</a>
+</div>
+  </main>
+</div>
+</div>
+<script src="../js/course.js"></script>
+<script src="../js/motion.js" defer></script>
+</body>
+</html>

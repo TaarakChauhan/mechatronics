@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glossary — Mechatronics Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/course.css">
+<link rel="stylesheet" href="css/motion.css">
+</head>
+<body data-base="" data-lesson="">
+<div class="course-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="index.html">Mechatronics <span>Studio</span></a>
+    <div class="sub">Deep Systems Course</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+<div class="main-wrap">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      <div class="topbar-title"><strong>Mechatronics Studio</strong> · Deep Systems</div>
+    </div>
+    <div class="progress-pill">
+      <span data-progress-pct>0%</span>
+      <div class="progress-bar"><div class="progress-bar-fill" data-progress-fill style="width:0%"></div></div>
+    </div>
+  </header>
+  <main class="content page-enter">
+<div class="page-hero reveal-up">
+  <h1>Glossary</h1>
+  <p class="lead">53 essential terms spanning classical mechatronics and modern cyber-physical systems.</p>
+</div>
+<dl class="glossary-list reveal">
+<dt>Actuator</dt><dd>Device that converts a control command into physical action (force, motion, flow, heat).</dd>
+<dt>Aliasing</dt><dd>Distortion when sampling is too slow relative to signal bandwidth, folding high frequencies into the baseband.</dd>
+<dt>Anti-windup</dt><dd>Technique preventing integral terms from accumulating while actuators are saturated.</dd>
+<dt>Backlash</dt><dd>Lost motion in a mechanical transmission when reversing direction.</dd>
+<dt>Bode plot</dt><dd>Frequency-response graph of magnitude (dB) and phase versus log frequency.</dd>
+<dt>Closed-loop control</dt><dd>Control that uses feedback of the measured output to correct error.</dd>
+<dt>Cobot</dt><dd>Collaborative robot designed for interaction near humans under defined safety modes.</dd>
+<dt>CRC</dt><dd>Cyclic redundancy check — error-detecting code for digital frames.</dd>
+<dt>Damping ratio</dt><dd>Dimensionless measure of how oscillations decay in a second-order system.</dd>
+<dt>DAQ</dt><dd>Data acquisition — hardware/software that digitises and records signals.</dd>
+<dt>Dead band</dt><dd>Input region producing no measurable output change.</dd>
+<dt>Degree of freedom (DOF)</dt><dd>Independent coordinate needed to specify a mechanism configuration.</dd>
+<dt>Digital twin</dt><dd>Virtual counterpart synchronised with a physical asset for analysis and decisions.</dd>
+<dt>Disturbance</dt><dd>Unwanted input affecting the plant (load, ambient change, etc.).</dd>
+<dt>DMA</dt><dd>Direct memory access — peripheral data movement without CPU byte-copying.</dd>
+<dt>EtherCAT</dt><dd>Industrial Ethernet technology with on-the-fly processing and distributed clocks.</dd>
+<dt>Fail-safe</dt><dd>Design property that drives the system toward a safer state under faults.</dd>
+<dt>Feedforward</dt><dd>Control action based on measured references/disturbances before error grows.</dd>
+<dt>Field-oriented control (FOC)</dt><dd>Vector control method for AC/BLDC machines aligning torque and flux axes.</dd>
+<dt>Fuzzy logic</dt><dd>Rule-based reasoning using graded membership rather than strict Boolean truth.</dd>
+<dt>Gain margin</dt><dd>Factor by which loop gain may increase before instability at the phase crossover.</dd>
+<dt>Hysteresis</dt><dd>Path-dependent output for rising versus falling inputs.</dd>
+<dt>IEC 61131-3</dt><dd>International standard family for PLC programming languages.</dd>
+<dt>IEC 62443</dt><dd>Standards family for industrial automation and control system cybersecurity.</dd>
+<dt>IO-Link</dt><dd>Point-to-point digital communication for smart sensors and actuators.</dd>
+<dt>Kalman filter</dt><dd>Optimal estimator fusing models and noisy measurements (linear Gaussian case).</dd>
+<dt>LVDT</dt><dd>Linear variable differential transformer — inductive position transducer.</dd>
+<dt>MCU</dt><dd>Microcontroller integrating CPU, memory, and peripherals on one chip.</dd>
+<dt>Measurand</dt><dd>Quantity intended to be measured.</dd>
+<dt>MEMS</dt><dd>Micro-electromechanical systems — miniaturised mechanical devices on silicon.</dd>
+<dt>Nyquist rate</dt><dd>Sampling-rate bound related to twice the signal bandwidth for reconstruction.</dd>
+<dt>OPC UA</dt><dd>Open platform communications unified architecture — industrial interoperability framework.</dd>
+<dt>Open-loop</dt><dd>Actuation without correcting from output measurement.</dd>
+<dt>Phase margin</dt><dd>Additional phase lag tolerable at gain crossover before -180 degrees.</dd>
+<dt>PID</dt><dd>Proportional-integral-derivative feedback controller.</dd>
+<dt>Plant</dt><dd>Physical process or mechanism under measurement or control.</dd>
+<dt>PLC</dt><dd>Programmable logic controller — industrial cyclic controller with rugged I/O.</dd>
+<dt>PWM</dt><dd>Pulse-width modulation — duty-cycle encoding of an average drive signal.</dd>
+<dt>Quantisation</dt><dd>Mapping a continuous amplitude to discrete digital levels.</dd>
+<dt>ROS 2</dt><dd>Robot Operating System 2 — distributed robotics software framework.</dd>
+<dt>RTD</dt><dd>Resistance temperature detector (e.g. Pt100).</dd>
+<dt>Scan cycle</dt><dd>PLC loop of reading inputs, solving logic, and writing outputs.</dd>
+<dt>Sensor fusion</dt><dd>Combining multiple sensors to improve state estimates.</dd>
+<dt>Setpoint</dt><dd>Desired value of a controlled variable (reference).</dd>
+<dt>SIL</dt><dd>Safety integrity level — measure of risk reduction for safety functions.</dd>
+<dt>Strain gauge</dt><dd>Resistive element sensing surface strain, often in a bridge.</dd>
+<dt>Time-Sensitive Networking (TSN)</dt><dd>Ethernet features enabling bounded-latency traffic.</dd>
+<dt>TinyML</dt><dd>Machine learning on highly constrained edge/MCU devices.</dd>
+<dt>Transfer function</dt><dd>Laplace-domain ratio of output to input for linear time-invariant systems.</dd>
+<dt>Transducer</dt><dd>Device converting energy from one form to another; sensors are often transducers.</dd>
+<dt>Watchdog timer</dt><dd>Hardware/software timer that resets a system if not serviced in time.</dd>
+<dt>Wheatstone bridge</dt><dd>Four-element network converting small resistance changes to differential voltage.</dd>
+<dt>Ziegler-Nichols</dt><dd>Classical empirical PID tuning approach using ultimate gain/period.</dd>
+</dl>
+  </main>
+</div>
+</div>
+<script src="js/course.js"></script>
+<script src="js/motion.js" defer></script>
+</body>
+</html>

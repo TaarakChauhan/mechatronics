@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Systems thinking & feedback — Mechatronics Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/course.css">
+<link rel="stylesheet" href="../css/motion.css">
+</head>
+<body data-lesson="01-systems-thinking" data-base="lessons" data-prev="01-what-is-mechatronics.html" data-next="01-measurement-and-control.html">
+<div class="course-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html">Mechatronics <span>Studio</span></a>
+    <div class="sub">Deep Systems Course</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+<div class="main-wrap">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      <div class="topbar-title"><strong>Mechatronics Studio</strong> · Deep Systems</div>
+    </div>
+    <div class="progress-pill">
+      <span data-progress-pct>0%</span>
+      <div class="progress-bar"><div class="progress-bar-fill" data-progress-fill style="width:0%"></div></div>
+    </div>
+  </header>
+  <main class="content page-enter">
+<div class="lesson-meta">Module 1 — Foundations</div>
+<h1>Systems thinking & feedback</h1>
+
+<p>Systems thinking in mechatronics means describing behaviour in terms of signals, energy flows, and cause–effect chains — especially feedback. Almost every useful product that “keeps something where you want it” is a closed-loop system.</p>
+
+<h2>Open loop vs closed loop</h2>
+<p>An <strong>open-loop</strong> system applies an actuator command based on a model or calibration and does not check the result. A toaster timer is open-loop with respect to bread colour: time expires regardless of browning. A <strong>closed-loop</strong> (feedback) system measures the output, compares it to a setpoint, and corrects the error.</p>
+
+<div class="diagram">
+<svg viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg" aria-label="Closed-loop block diagram">
+  <rect width="680" height="200" fill="#f8fafc"/>
+  <text x="20" y="30" font-family="IBM Plex Sans" font-size="12" fill="#64748b">Closed-loop control</text>
+  <!-- summing -->
+  <circle cx="100" cy="90" r="22" fill="none" stroke="#0b1220" stroke-width="2" class="svg-spin svg-pulse"/>
+  <text x="92" y="95" font-family="IBM Plex Sans" font-size="16">Σ</text>
+  <text x="30" y="70" font-family="IBM Plex Sans" font-size="11" fill="#0d9488">r (setpoint)</text>
+  <line x1="55" y1="90" x2="78" y2="90" stroke="#0b1220" stroke-width="2" marker-end="url(#a)" class="svg-draw"/>
+  <text x="108" y="70" font-family="IBM Plex Sans" font-size="11">e</text>
+  <!-- controller -->
+  <rect x="150" y="65" width="100" height="50" rx="6" fill="#14b8a6" opacity="0.2" stroke="#0d9488" stroke-width="2" class="svg-pulse"/>
+  <text x="165" y="95" font-family="IBM Plex Sans" font-size="12" fill="#0b1220">Controller</text>
+  <line x1="122" y1="90" x2="150" y2="90" stroke="#0b1220" stroke-width="2" class="svg-draw"/>
+  <line x1="250" y1="90" x2="280" y2="90" stroke="#0b1220" stroke-width="2"/>
+  <text x="255" y="80" font-family="IBM Plex Sans" font-size="11">u</text>
+  <!-- plant -->
+  <rect x="280" y="65" width="100" height="50" rx="6" fill="#f59e0b" opacity="0.2" stroke="#d97706" stroke-width="2" class="svg-pulse"/>
+  <text x="308" y="95" font-family="IBM Plex Sans" font-size="12">Plant</text>
+  <line x1="380" y1="90" x2="430" y2="90" stroke="#0b1220" stroke-width="2"/>
+  <text x="450" y="95" font-family="IBM Plex Sans" font-size="12" fill="#0d9488">y (output)</text>
+  <!-- disturbance -->
+  <text x="330" y="40" font-family="IBM Plex Sans" font-size="11" fill="#b45309">d</text>
+  <line x1="330" y1="48" x2="330" y2="65" stroke="#b45309" stroke-width="1.5" class="svg-flow"/>
+  <!-- feedback -->
+  <line x1="430" y1="90" x2="430" y2="150" stroke="#0b1220" stroke-width="2"/>
+  <line x1="430" y1="150" x2="100" y2="150" stroke="#0b1220" stroke-width="2"/>
+  <line x1="100" y1="150" x2="100" y2="112" stroke="#0b1220" stroke-width="2"/>
+  <rect x="230" y="135" width="90" height="30" rx="4" fill="#e0e7ff" stroke="#6366f1" stroke-width="1.5" class="svg-pulse"/>
+  <text x="245" y="155" font-family="IBM Plex Sans" font-size="11">Sensor H</text>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0b1220"/></marker></defs>
+</svg>
+<div class="diagram-caption">Figure: Standard feedback loop — reference r, error e, control u, plant, disturbance d, measured output via sensor H.</div>
+</div>
+
+<h2>Vocabulary that must stay precise</h2>
+<ul>
+<li><strong>Plant</strong> — the process (thermal chamber, motor+load, hydraulic cylinder).</li>
+<li><strong>Setpoint / reference (r)</strong> — desired behaviour.</li>
+<li><strong>Error (e)</strong> — usually r − y (or r − measured y).</li>
+<li><strong>Disturbance (d)</strong> — unwanted input (load torque, ambient temperature change).</li>
+<li><strong>Feedback</strong> — routing a measurement of the output back for comparison.</li>
+<li><strong>Feedforward</strong> — using measured disturbances or known references to act before error grows (complements feedback).</li>
+</ul>
+
+<div class="callout reveal-up key">
+<strong class="label">Key idea</strong>
+Feedback can reject disturbances and reduce sensitivity to plant uncertainty — but it can also create instability if gain and delays are mishandled. Open-loop is simpler and sometimes safer when the plant is well known and disturbances are tiny.
+</div>
+
+<h2>Block diagrams as a language</h2>
+<p>Block diagrams abstract subsystems as transfer operators (for linear models) or as process boxes (for conceptual design). Arrows are signals. Summing junctions add or subtract. The skill is to redraw a messy schematic into a clear signal path: what is measured, what is commanded, where noise enters, where saturation happens.</p>
+
+<div class="callout reveal-up watch">
+<strong class="label">Watch-out</strong>
+Students often draw “feedback” from an actuator command instead of from a true output measurement. That is not output feedback — it is open-loop with a fancy diagram.
+</div>
+
+<div class="worked reveal-up">
+<h3>Worked example — room temperature</h3>
+<p>Setpoint 21&nbsp;°C. Thermistor reads 19.5&nbsp;°C. Error = 1.5&nbsp;°C. A proportional heater command u = K<sub>p</sub>·e with K<sub>p</sub> = 8&nbsp;%/°C yields u = 12&nbsp;% heater duty. A door opening is a disturbance that cools the room; feedback increases duty until the measured temperature returns near 21&nbsp;°C. An open-loop timer would keep the old duty and leave the room cold.</p>
+</div>
+
+<div class="callout reveal-up then">
+<strong class="label">Then vs now</strong>
+The block-diagram language is unchanged. What changed is the plant: networked smart actuators, software-defined controllers, and observers that estimate unmeasured states (Module 8).
+</div>
+
+<div class="terms-box reveal-up">
+<h3>Key terms</h3>
+<dl>
+<dt>Open-loop</dt><dd>Actuation without using output measurement for correction.</dd>
+<dt>Closed-loop</dt><dd>Control that uses feedback of the controlled variable.</dd>
+<dt>Disturbance rejection</dt><dd>Keeping y near r despite d.</dd>
+</dl>
+</div>
+
+
+<!--expanded-->
+
+<h2>Disturbance paths and sensor placement</h2>
+<p>Where you measure matters as much as how you control. Measuring motor current is not the same as measuring load force; measuring tank outflow is not the same as measuring level. A well-drawn block diagram forces you to name the true controlled variable. If the customer cares about level, feedback from a flow meter alone is an indirect scheme that needs a model — and models drift.</p>
+<p>Disturbances enter at different points. A load torque enters at the mechanical plant; sensor bias enters in the feedback path; quantisation noise enters after the ADC. Controllers that look identical on paper behave differently once you place these arrows honestly.</p>
+<div class="callout reveal-up try">
+<strong class="label">Try this</strong>
+Redraw a cruise-control loop. Mark wind as a disturbance on the vehicle plant, and mark speedometer error as a feedback-path defect. Which one can integral action remove in steady state on a constant grade? (Hint: constant grade disturbance yes; constant sensor bias no — the car will settle at the wrong true speed.)
+</div>
+
+<!--dive-->
+
+<h2>Signal flow honesty and causality</h2>
+<p>Students sometimes draw arrows that violate causality: outputs magically creating inputs without energy or information paths. A good habit is to annotate each arrow with units and a rough bandwidth. If an arrow labelled “force” somehow feeds an ADC without a sensor, the diagram is fiction.</p>
+<p>Linear block diagrams hide saturations. Add notes for limits: valve cannot open beyond 100%, motor current clips at Imax, PWM duty is [0,1]. Controllers designed in pure linearity surprise you at the first hard stop. Anti-windup and conditional integration are diagram citizens, not afterthoughts.</p>
+<p>For multi-loop systems, draw the inner loop as a single block once it is fast and stable, then design the outer loop. This hierarchical thinking matches how cascaded drives are commissioned and prevents trying to retune everything at once.</p>
+<p>When documenting disturbances, distinguish measured disturbances (available for feedforward) from unmeasured ones (only feedback can fight them). That split drives sensor shopping lists more honestly than a vague desire for “more data.”</p>
+<!--essay-->
+
+<h2>Extended studio notes — 01 systems thinking</h2>
+<p>In professional mechatronics work, the ideas in this lesson show up less as isolated definitions and more as constraints that fight each other. Feedback can reject disturbances only if the measurement truly observes the affected output path. When you write requirements, force numbers onto those constraints: sample rates, newton-metres, degrees Celsius, milliseconds of latency, millimetres of error. Vague adjectives hide trade-offs until tooling steel is already ordered.</p>
+<p>A useful studio habit is to keep a living “assumption list” beside your block diagram. Typical assumptions include linearity, constant temperature, perfect sampling clocks, infinite actuator authority, and noise-free sensors. Assuming a sensor is perfect turns every plant uncertainty into mysterious closed-loop behaviour. Crossing out an assumption should trigger either a model upgrade, a hardware change, or an explicit residual risk acceptance signed by someone accountable.</p>
+<p>Commissioning is where theory meets cable trays. Expect ground loops, mis-labelled I/O, incorrect engineering-unit scales, and mechanical binding that looks like a “software bug.” If the plant saturates, your linear margin calculations quietly expire. Bring an oscilloscope or drive trace tool early; bring a torque wrench and alignment dial indicator just as early. The mechatronic engineer who only debugs in an IDE will misclassify half of field faults.</p>
+<p>Documentation is part of the control system. Record firmware hashes, gain sets, mechanical revisions, and network topologies together. Future failure analysis needs that bundle. A one-page signal dictionary (name, unit, range, rate) prevents months of integration confusion. If your organisation treats documents as after-the-fact paperwork, expect to rediscover tuning constants from scratch after every staff rotation.</p>
+<p>Finally, connect this lesson forward and backward in the course. Foundations without modern networks leave you unable to ship connected machines; modern buzzwords without foundations leave you unable to stabilise a simple loop. Later PID and Bode lessons simply quantify the same arrows you draw here. Use the quizzes not as memorisation theatre but as prompts to redraw the diagrams from memory on paper — that retrieval practice builds the intuition you will need on a noisy factory floor.</p>
+<div class="worked reveal-up">
+<h3>Additional worked scenario</h3>
+<p>A conveyor speed loop uses tach feedback but the customer cares about package spacing. If spacing drifts with belt stretch, you measured the wrong output for the true requirement — redraw the loop around a vision or encoder-on-belt measurement, or add a feedforward stretch model.</p>
+</div>
+
+<form class="quiz reveal-up" data-quiz="01-systems-thinking">
+<h3>Check your understanding</h3>
+<div class="quiz-q" data-answer="b">
+<div class="q-text">1. In the standard loop, error e is typically:</div>
+<label><input type="radio" name="q1" value="a"> y − d</label>
+<label><input type="radio" name="q1" value="b"> r − y</label>
+<label><input type="radio" name="q1" value="c"> u − r</label>
+<label><input type="radio" name="q1" value="d"> H only</label>
+<div class="explain">Error is reference minus (measured) output.</div>
+</div>
+
+<div class="quiz-q" data-answer="d">
+<div class="q-text">2. A toaster timer controlling browning by time alone is:</div>
+<label><input type="radio" name="q2" value="a"> Closed-loop colour control</label>
+<label><input type="radio" name="q2" value="b"> A PID loop</label>
+<label><input type="radio" name="q2" value="c"> Feedforward of humidity</label>
+<label><input type="radio" name="q2" value="d"> Open-loop with respect to colour</label>
+<div class="explain">It does not measure toast colour.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">3. A disturbance is:</div>
+<label><input type="radio" name="q3" value="a"> An unwanted input affecting the plant</label>
+<label><input type="radio" name="q3" value="b"> The setpoint</label>
+<label><input type="radio" name="q3" value="c"> Always sensor noise</label>
+<label><input type="radio" name="q3" value="d"> The controller gain</label>
+<div class="explain">Load changes, ambient shifts, etc., act as disturbances.</div>
+</div>
+
+<div class="quiz-q" data-answer="c">
+<div class="q-text">4. Feedback from the actuator command (not the output) means:</div>
+<label><input type="radio" name="q4" value="a"> True output regulation</label>
+<label><input type="radio" name="q4" value="b"> Perfect disturbance rejection</label>
+<label><input type="radio" name="q4" value="c"> You are still essentially open-loop on the true output</label>
+<label><input type="radio" name="q4" value="d"> Infinite bandwidth</label>
+<div class="explain">Without measuring y, you cannot correct y.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">5. Feedforward typically:</div>
+<label><input type="radio" name="q5" value="a"> Uses known references/disturbances to act before error grows</label>
+<label><input type="radio" name="q5" value="b"> Replaces all sensors</label>
+<label><input type="radio" name="q5" value="c"> Guarantees stability alone</label>
+<label><input type="radio" name="q5" value="d"> Removes the need for a plant</label>
+<div class="explain">Feedforward complements feedback; it anticipates.</div>
+</div>
+
+<button type="submit" class="btn btn-primary">Submit answers</button>
+<div class="quiz-result"></div></form>
+<div class="lesson-footer">
+  <a class="btn btn-outline" href="01-what-is-mechatronics.html">← Previous</a>
+  <button type="button" class="btn btn-primary" id="mark-complete">Mark complete</button>
+  <a class="btn btn-secondary" href="01-measurement-and-control.html">Next →</a>
+</div>
+  </main>
+</div>
+</div>
+<script src="../js/course.js"></script>
+<script src="../js/motion.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System models — Mechatronics Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/course.css">
+<link rel="stylesheet" href="../css/motion.css">
+</head>
+<body data-lesson="06-system-models" data-base="lessons" data-prev="05-communications-and-faults.html" data-next="06-dynamics-and-transfer.html">
+<div class="course-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html">Mechatronics <span>Studio</span></a>
+    <div class="sub">Deep Systems Course</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+<div class="main-wrap">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      <div class="topbar-title"><strong>Mechatronics Studio</strong> · Deep Systems</div>
+    </div>
+    <div class="progress-pill">
+      <span data-progress-pct>0%</span>
+      <div class="progress-bar"><div class="progress-bar-fill" data-progress-fill style="width:0%"></div></div>
+    </div>
+  </header>
+  <main class="content page-enter">
+<div class="lesson-meta">Module 6 — Models and control</div>
+<h1>System models</h1>
+
+<p>Models let us predict and design before metal is cut. Mechatronics uses <strong>lumped-parameter</strong> building blocks across domains.</p>
+
+<h2>Building blocks</h2>
+<ul>
+<li><strong>Mechanical translation</strong> — mass, spring, damper.</li>
+<li><strong>Rotation</strong> — inertia, torsional spring, rotary damper.</li>
+<li><strong>Electrical</strong> — R, L, C.</li>
+<li><strong>Fluid</strong> — inertance, capacitance (compliance), resistance.</li>
+<li><strong>Thermal</strong> — capacitance (mc<sub>p</sub>), resistance (conduction/convection).</li>
+</ul>
+<p>Coupling elements connect domains: gears (rotation–rotation), levers, voice-coils and motors (electro–mechanical), pistons (fluid–mechanical).</p>
+
+<div class="diagram">
+<svg viewBox="0 0 520 160" xmlns="http://www.w3.org/2000/svg">
+  <rect width="520" height="160" fill="#f8fafc"/>
+  <text x="20" y="24" font-family="IBM Plex Sans" font-size="12" fill="#64748b">Mass–spring–damper</text>
+  <line x1="40" y1="40" x2="40" y2="130" stroke="#0b1220" stroke-width="3" class="svg-draw"/>
+  <path d="M40,80 L70,70 L90,90 L110,70 L130,90 L150,80" fill="none" stroke="#14b8a6" stroke-width="2" class="svg-draw"/>
+  <rect x="150" y="65" width="50" height="30" fill="#f59e0b" opacity="0.4" stroke="#d97706" class="svg-pulse"/>
+  <text x="162" y="85" font-size="12">m</text>
+  <line x1="200" y1="80" x2="280" y2="80" stroke="#0b1220" stroke-width="2" class="svg-draw"/>
+  <line x1="220" y1="80" x2="220" y2="120" stroke="#6366f1" stroke-width="2" class="svg-flow"/>
+  <line x1="210" y1="120" x2="230" y2="120" stroke="#6366f1" stroke-width="2" class="svg-flow"/>
+  <line x1="210" y1="125" x2="230" y2="125" stroke="#6366f1" stroke-width="2" class="svg-flow"/>
+  <text x="240" y="125" font-size="11" fill="#6366f1">c</text>
+  <text x="90" y="55" font-size="11" fill="#0d9488">k</text>
+</svg>
+<div class="diagram-caption">Figure: Classic second-order mechanical plant.</div>
+</div>
+
+<div class="callout reveal-up key">
+<strong class="label">Key idea</strong>
+Linearity is an assumption with a validity region. Saturation, backlash, and stick–slip make real plants nonlinear — design with that humility.
+</div>
+
+<div class="worked reveal-up">
+<h3>Worked example — thermal lag</h3>
+<p>A small heater block: thermal capacitance C<sub>t</sub> = 400&nbsp;J/K, to ambient through R<sub>t</sub> = 0.5&nbsp;K/W. Time constant τ = R<sub>t</sub>C<sub>t</sub> = 200&nbsp;s. A step in heater power moves temperature with a first-order lag of ~200&nbsp;s — slow compared to electronics, crucial for tuning.</p>
+</div>
+
+<div class="terms-box reveal-up"><h3>Key terms</h3>
+<dl>
+<dt>Lumped model</dt><dd>Finite energy-storage elements approximating distributed physics.</dd>
+<dt>Time constant</dt><dd>Characteristic lag scale for first-order systems.</dd>
+<dt>Coupling</dt><dd>Element linking domains (e.g. motor constant).</dd>
+</dl></div>
+
+
+<!--expanded-->
+
+<h2>Analogy and nondimensional thinking</h2>
+<p>The same second-order math appears in RLC circuits and mass–spring–dampers. Learning the analogies accelerates intuition: inductance ~ mass, capacitance ~ spring compliance (with care about conjugate variables). Nondimensional forms (ζ, ω<sub>n</sub>) let you compare plants across units.</p>
+<p>Model reduction matters: a 20-state FEM model is useless for a 1&nbsp;kHz embedded loop. Keep the poles near the control bandwidth and treat faster dynamics as parasitics or filtered noise.</p>
+
+<!--dive-->
+
+<h2>Building models that stay useful</h2>
+<p>Start with conservation laws and constitutive equations, then linearise about an operating point. State the operating point explicitly; a linearised valve model at 10% open differs from one at 80% open.</p>
+<p>Validate models with step tests and, if possible, frequency sweeps. If the model cannot predict the first overshoot within a factor of two, improve the model before fancy control.</p>
+<p>Keep parameter uncertainty ranges. Robust control thinking begins with “K between 0.8 and 1.3,” not a fake single number.</p>
+<p>Couple domains only as needed. An electro-mechanical motor model needs L, R, Kt, Ke, J, b — enough for current and speed loops without modelling every tooth fillet.</p>
+<!--essay-->
+
+<h2>Extended studio notes — 06 system models</h2>
+<p>In professional mechatronics work, the ideas in this lesson show up less as isolated definitions and more as constraints that fight each other. Models are tools for decisions; fidelity beyond the decision wastes time. When you write requirements, force numbers onto those constraints: sample rates, newton-metres, degrees Celsius, milliseconds of latency, millimetres of error. Vague adjectives hide trade-offs until tooling steel is already ordered.</p>
+<p>A useful studio habit is to keep a living “assumption list” beside your block diagram. Typical assumptions include linearity, constant temperature, perfect sampling clocks, infinite actuator authority, and noise-free sensors. Assuming constant parameters across temperature ignores copper resistance rise and lubricant viscosity. Crossing out an assumption should trigger either a model upgrade, a hardware change, or an explicit residual risk acceptance signed by someone accountable.</p>
+<p>Commissioning is where theory meets cable trays. Expect ground loops, mis-labelled I/O, incorrect engineering-unit scales, and mechanical binding that looks like a “software bug.” Unmodelled delay is the usual assassin of aggressively designed loops. Bring an oscilloscope or drive trace tool early; bring a torque wrench and alignment dial indicator just as early. The mechatronic engineer who only debugs in an IDE will misclassify half of field faults.</p>
+<p>Documentation is part of the control system. Record firmware hashes, gain sets, mechanical revisions, and network topologies together. Future failure analysis needs that bundle. Publish parameter sources (datasheet, fit, guess) with confidence tags. If your organisation treats documents as after-the-fact paperwork, expect to rediscover tuning constants from scratch after every staff rotation.</p>
+<p>Finally, connect this lesson forward and backward in the course. Foundations without modern networks leave you unable to ship connected machines; modern buzzwords without foundations leave you unable to stabilise a simple loop. Twins later amplify both good and bad models — garbage in, cinematic garbage out. Use the quizzes not as memorisation theatre but as prompts to redraw the diagrams from memory on paper — that retrieval practice builds the intuition you will need on a noisy factory floor.</p>
+<div class="worked reveal-up">
+<h3>Additional worked scenario</h3>
+<p>Thermal: C=500 J/K, R=0.4 K/W, τ=200 s. Heater step 100 W ⇒ steady ΔT=IR-like = P·R=40 K. After 200 s, ~63% of 40 K ≈ 25 K rise — use to sanity-check plant tests before blaming the controller for “slow heating.”</p>
+</div>
+
+<!--boost-->
+
+<div class="callout reveal-up key">
+<strong class="label">Studio checkpoint</strong>
+Before you mark this lesson complete, sketch the primary diagram from memory, restate the worked numerical example with different numbers, and name one modern (2026) technology that extends the classical idea without deleting it. If you cannot do those three things, skim the Key terms and Then-vs-now callouts once more. Mechatronics rewards active recall more than passive scrolling: the machines you will commission will not pause while you search a textbook under pressure. Carry forward one concrete question into the next lesson — for example a timing budget, an error-budget line item, or a fault-policy choice — and resolve it explicitly when the next topic provides the missing piece.
+</div>
+
+<form class="quiz reveal-up" data-quiz="06-system-models">
+<h3>Check your understanding</h3>
+<div class="quiz-q" data-answer="a">
+<div class="q-text">1. Mass–spring–damper is typically:</div>
+<label><input type="radio" name="q1" value="a"> Second order (two energy storages)</label>
+<label><input type="radio" name="q1" value="b"> Zeroth order</label>
+<label><input type="radio" name="q1" value="c"> Only digital</label>
+<label><input type="radio" name="q1" value="d"> A network protocol</label>
+<div class="explain">Mass and spring store energy.</div>
+</div>
+
+<div class="quiz-q" data-answer="c">
+<div class="q-text">2. τ = RC in thermal analogy uses:</div>
+<label><input type="radio" name="q2" value="a"> Only encoder CPR</label>
+<label><input type="radio" name="q2" value="b"> Wi-Fi RSSI</label>
+<label><input type="radio" name="q2" value="c"> Thermal R and C</label>
+<label><input type="radio" name="q2" value="d"> Ladder seal-ins</label>
+<div class="explain">First-order thermal lag.</div>
+</div>
+
+<div class="quiz-q" data-answer="c">
+<div class="q-text">3. A DC motor couples:</div>
+<label><input type="radio" name="q3" value="a"> Only two Ethernet layers</label>
+<label><input type="radio" name="q3" value="b"> Colour and sound only</label>
+<label><input type="radio" name="q3" value="c"> Electrical and mechanical domains</label>
+<label><input type="radio" name="q3" value="d"> Nothing</label>
+<div class="explain">Electro-mechanical transducer.</div>
+</div>
+
+<div class="quiz-q" data-answer="c">
+<div class="q-text">4. Linearity assumptions fail when:</div>
+<label><input type="radio" name="q4" value="a"> SI units are used</label>
+<label><input type="radio" name="q4" value="b"> Diagrams are SVG</label>
+<label><input type="radio" name="q4" value="c"> Saturation/backlash dominate</label>
+<label><input type="radio" name="q4" value="d"> Quizzes exist</label>
+<div class="explain">Nonlinearities matter.</div>
+</div>
+
+<div class="quiz-q" data-answer="d">
+<div class="q-text">5. Fluid capacitance relates to:</div>
+<label><input type="radio" name="q5" value="a"> Only XOR gates</label>
+<label><input type="radio" name="q5" value="b"> Font kerning</label>
+<label><input type="radio" name="q5" value="c"> CRC polynomials</label>
+<label><input type="radio" name="q5" value="d"> Compressibility / free surface storage</label>
+<div class="explain">Pressure rise for net inflow.</div>
+</div>
+
+<button type="submit" class="btn btn-primary">Submit answers</button>
+<div class="quiz-result"></div></form>
+<div class="lesson-footer">
+  <a class="btn btn-outline" href="05-communications-and-faults.html">← Previous</a>
+  <button type="button" class="btn btn-primary" id="mark-complete">Mark complete</button>
+  <a class="btn btn-secondary" href="06-dynamics-and-transfer.html">Next →</a>
+</div>
+  </main>
+</div>
+</div>
+<script src="../js/course.js"></script>
+<script src="../js/motion.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,418 @@
+/* Mechatronics Studio — motion design system (offline, CSS-only) */
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-springy: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+  --dur-fast: 150ms;
+  --dur: 280ms;
+  --dur-slow: 520ms;
+  --stagger: 55ms;
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes progress-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); }
+  50% { box-shadow: 0 0 12px 2px rgba(20, 184, 166, 0.45); }
+}
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+@keyframes draw-stroke {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes signal-flow {
+  from { stroke-dashoffset: 24; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes check-pop {
+  0% { transform: scale(0.4); opacity: 0; }
+  60% { transform: scale(1.18); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes shake-soft {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes orb-drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(18px, -12px) scale(1.06); }
+}
+@keyframes orb-drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-14px, 16px) scale(1.04); }
+}
+@keyframes orb-drift-c {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(10px, 10px); }
+}
+@keyframes gradient-drift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes active-glow {
+  0%, 100% { box-shadow: inset 3px 0 0 var(--teal), 0 0 0 0 rgba(20, 184, 166, 0); }
+  50% { box-shadow: inset 3px 0 0 var(--teal), 0 0 14px 0 rgba(20, 184, 166, 0.35); }
+}
+@keyframes green-flash {
+  0% { background-color: #a7f3d0; }
+  100% { background-color: transparent; }
+}
+@keyframes explain-down {
+  from { opacity: 0; transform: translateY(-6px); max-height: 0; }
+  to { opacity: 1; transform: translateY(0); max-height: 120px; }
+}
+
+/* ---------- Reveal utilities ---------- */
+.reveal,
+.reveal-up,
+.reveal-left,
+.reveal-scale {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.reveal { transform: none; }
+.reveal-up { transform: translateY(16px); }
+.reveal-left { transform: translateX(-16px); }
+.reveal-scale { transform: scale(0.94); }
+
+.reveal.is-visible,
+.reveal-up.is-visible,
+.reveal-left.is-visible,
+.reveal-scale.is-visible {
+  animation: fade-in var(--dur-slow) var(--ease-out) both;
+}
+.reveal-up.is-visible { animation-name: fade-up; }
+.reveal-left.is-visible { animation-name: slide-in-left; }
+.reveal-scale.is-visible { animation-name: scale-in; }
+
+.stagger-children > * {
+  --i: 0;
+}
+.stagger-children > .reveal,
+.stagger-children > .reveal-up,
+.stagger-children > .reveal-left,
+.stagger-children > .reveal-scale,
+.stagger-children.is-visible > * {
+  animation-delay: calc(var(--i, 0) * var(--stagger));
+}
+
+/* When parent is stagger-children and child becomes visible via observer on child */
+.stagger-children > .reveal.is-visible,
+.stagger-children > .reveal-up.is-visible,
+.stagger-children > .reveal-left.is-visible,
+.stagger-children > .reveal-scale.is-visible {
+  animation-delay: calc(var(--i, 0) * var(--stagger));
+}
+
+.anim-in {
+  animation: fade-up var(--dur-slow) var(--ease-out) both;
+}
+.page-enter {
+  animation: fade-in var(--dur-slow) var(--ease-out) both;
+}
+
+/* ---------- Diagram motion ---------- */
+.diagram svg .svg-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.diagram.is-visible .svg-pulse {
+  animation: pulse-soft 2.8s var(--ease-in-out) infinite;
+}
+.diagram.is-visible .svg-flow {
+  stroke-dasharray: 8 6;
+  animation: signal-flow 2.2s linear infinite;
+}
+.diagram.is-visible .svg-spin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: spin-slow 6s linear infinite;
+}
+.diagram.is-visible .svg-bob {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bob 2.4s var(--ease-in-out) infinite;
+}
+.svg-draw {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+}
+.diagram.is-visible .svg-draw {
+  animation: draw-stroke 1.1s var(--ease-out) forwards;
+}
+
+/* ---------- Hover polish ---------- */
+.lift,
+.mod-card {
+  transition:
+    transform var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out),
+    border-color var(--dur-fast) ease;
+}
+.lift:hover,
+.mod-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(11, 18, 32, 0.12);
+}
+
+.btn {
+  transition:
+    background var(--dur-fast) ease,
+    color var(--dur-fast) ease,
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) ease;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+.btn:active:hover {
+  transform: scale(0.97);
+}
+
+a.ms-link,
+.landing-nav a,
+.sidebar-brand a {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1.5px;
+  transition: background-size var(--dur) var(--ease-out), color var(--dur-fast) ease;
+}
+a.ms-link:hover,
+.landing-nav a:hover {
+  background-size: 100% 1.5px;
+  text-decoration: none;
+}
+
+/* ---------- Progress ---------- */
+.progress-bar-fill,
+.mod-prog-fill {
+  transition: width var(--dur-slow) cubic-bezier(0.22, 1, 0.36, 1);
+}
+.progress-bar-fill.progress-glow,
+.mod-prog-fill.progress-glow {
+  animation: progress-glow 0.9s var(--ease-out) 1;
+}
+
+/* ---------- Quiz ---------- */
+.quiz-q.correct {
+  animation: scale-in var(--dur) var(--ease-springy) both, green-flash 0.7s var(--ease-out);
+}
+.quiz-q.wrong {
+  animation: shake-soft 0.45s var(--ease-out);
+}
+.quiz-q.correct .explain,
+.quiz-q.wrong .explain {
+  animation: explain-down var(--dur) var(--ease-out) both;
+}
+.quiz-result.is-shown,
+form.quiz-scored .quiz-result {
+  display: block;
+  animation: fade-up var(--dur-slow) var(--ease-out) both;
+}
+form.quiz-scored .quiz-q.correct {
+  /* pulse correct answers once more gently */
+}
+form.quiz-scored .quiz-q.correct label.picked {
+  animation: pulse-soft 1s var(--ease-in-out) 1;
+}
+
+/* ---------- Complete checkmark ---------- */
+.lesson-link.done .check,
+.lesson-link.check-pop .check {
+  display: inline-block;
+  animation: check-pop 0.55s var(--ease-springy) both;
+}
+.lesson-link.active {
+  animation: active-glow 1.2s var(--ease-out) 1;
+}
+
+/* ---------- Hero ambient ---------- */
+.hero {
+  position: relative;
+  overflow: hidden;
+}
+.hero-orbs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.22;
+  will-change: transform;
+}
+.hero-orb.o1 {
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, #14b8a6 0%, transparent 70%);
+  top: -40px;
+  left: 8%;
+  animation: orb-drift-a 14s var(--ease-in-out) infinite;
+}
+.hero-orb.o2 {
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, #6366f1 0%, transparent 70%);
+  top: 20%;
+  right: 6%;
+  opacity: 0.18;
+  animation: orb-drift-b 18s var(--ease-in-out) infinite;
+}
+.hero-orb.o3 {
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, #f59e0b 0%, transparent 70%);
+  bottom: -20px;
+  left: 42%;
+  opacity: 0.14;
+  animation: orb-drift-c 16s var(--ease-in-out) infinite;
+}
+.hero > *:not(.hero-orbs) {
+  position: relative;
+  z-index: 1;
+}
+.hero-orbs.has-parallax {
+  /* JS nudges the whole orb layer; individual orb keyframes keep drifting */
+  transform: translate3d(calc(var(--px, 0) * 1px), calc(var(--py, 0) * 1px), 0);
+  transition: transform 80ms linear;
+}
+
+.landing-section.reveal.is-visible {
+  animation: fade-up var(--dur-slow) var(--ease-out) both;
+}
+
+.learn-item,
+.track-card {
+  transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+}
+.learn-item.reveal-up,
+.track-card.reveal-up {
+  opacity: 0;
+}
+
+/* View Transitions soft morph support */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 280ms;
+  animation-timing-function: var(--ease-out);
+}
+
+
+/* Hero entrance choreography */
+.hero .anim-in:nth-child(2) { animation-delay: 0ms; }
+.hero .anim-in:nth-child(3) { animation-delay: calc(var(--stagger) * 1); }
+.hero .anim-in:nth-child(4) { animation-delay: calc(var(--stagger) * 2); }
+.hero .anim-in:nth-child(5) { animation-delay: calc(var(--stagger) * 3); }
+.hero .anim-in {
+  animation: fade-up var(--dur-slow) var(--ease-out) both;
+}
+.learn-item.lift,
+.track-card.lift,
+.learn-grid.stagger-children > .learn-item,
+.track-grid.stagger-children > .track-card {
+  /* lift on hover via .lift or shared rule */
+}
+.learn-grid.stagger-children > .learn-item,
+.track-grid.stagger-children > .track-card {
+  transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+}
+.learn-grid.stagger-children > .learn-item:hover,
+.track-grid.stagger-children > .track-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(11, 18, 32, 0.1);
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0.01ms;
+    --dur: 0.01ms;
+    --dur-slow: 0.01ms;
+    --stagger: 0ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal,
+  .reveal-up,
+  .reveal-left,
+  .reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .hero-orbs,
+  .hero-orb {
+    display: none !important;
+    animation: none !important;
+  }
+
+  .diagram.is-visible .svg-pulse,
+  .diagram.is-visible .svg-flow,
+  .diagram.is-visible .svg-spin,
+  .diagram.is-visible .svg-bob,
+  .diagram.is-visible .svg-draw {
+    animation: none !important;
+  }
+
+  .svg-draw {
+    stroke-dashoffset: 0 !important;
+  }
+
+  .lift:hover,
+  .mod-card:hover,
+  .btn:hover,
+  .btn:active {
+    transform: none !important;
+  }
+
+  .lesson-link.active {
+    animation: none !important;
+  }
+}

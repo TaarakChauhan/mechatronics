@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Industry 4.0 & cyber-physical systems — Mechatronics Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/course.css">
+<link rel="stylesheet" href="../css/motion.css">
+</head>
+<body data-lesson="08-industry-40-and-cps" data-base="lessons" data-prev="07-case-cnc-and-appliance.html" data-next="08-sensors-then-vs-now.html">
+<div class="course-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html">Mechatronics <span>Studio</span></a>
+    <div class="sub">Deep Systems Course</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+<div class="main-wrap">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      <div class="topbar-title"><strong>Mechatronics Studio</strong> · Deep Systems</div>
+    </div>
+    <div class="progress-pill">
+      <span data-progress-pct>0%</span>
+      <div class="progress-bar"><div class="progress-bar-fill" data-progress-fill style="width:0%"></div></div>
+    </div>
+  </header>
+  <main class="content page-enter">
+<div class="lesson-meta">Module 8 — What changed: modern systems</div>
+<h1>Industry 4.0 & cyber-physical systems</h1>
+
+<p>Classical mechatronics built clever machines. <strong>Industry 4.0</strong> connects those machines into cyber-physical production systems; <strong>Industry 5.0</strong> recentres human creativity, resilience, and sustainability alongside automation.</p>
+
+<h2>Cyber-physical systems (CPS)</h2>
+<p>A CPS tightly couples computation, networking, and physical processes with feedback loops that may span device → edge → cloud. Timing, security, and model fidelity become first-class requirements — not IT afterthoughts bolted onto OT.</p>
+
+<h2>Education 4.0 and workforce</h2>
+<p>Learning shifts toward systems integration, data literacy, and safety/security competence. Knowing only ladder or only Python is incomplete; the mechatronic graduate navigates both plant physics and information architecture.</p>
+
+<h2>Human-in-the-loop vs lights-out</h2>
+<p>Lights-out manufacturing maximises autonomy in stable, well-instrumented processes. Human-in-the-loop designs keep people for exception handling, changeovers, and ethical responsibility. Collaborative robots (Module lesson on cobots) embody the hybrid.</p>
+
+<div class="diagram">
+<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="640" height="200" fill="#f8fafc"/>
+  <text x="20" y="24" font-family="IBM Plex Sans" font-size="12" fill="#64748b">CPS stack (conceptual)</text>
+  <rect x="40" y="130" width="140" height="50" rx="6" fill="#14b8a6" opacity="0.3" stroke="#0d9488" class="svg-pulse"/>
+  <text x="70" y="160" font-size="12">Physical plant</text>
+  <rect x="220" y="130" width="140" height="50" rx="6" fill="#f59e0b" opacity="0.3" stroke="#d97706" class="svg-pulse"/>
+  <text x="255" y="160" font-size="12">Edge control</text>
+  <rect x="400" y="130" width="140" height="50" rx="6" fill="#6366f1" opacity="0.25" stroke="#6366f1" class="svg-pulse"/>
+  <text x="445" y="160" font-size="12">Cloud / MES</text>
+  <path d="M110,130 L110,90 L290,90 L290,130" fill="none" stroke="#0b1220" stroke-width="1.5" class="svg-draw"/>
+  <path d="M290,130 L290,70 L470,70 L470,130" fill="none" stroke="#0b1220" stroke-width="1.5" class="svg-flow"/>
+  <text x="200" y="60" font-size="11" fill="#64748b">telemetry / commands / twins</text>
+</svg>
+<div class="diagram-caption">Figure: Physical ↔ edge ↔ enterprise loops defining a CPS.</div>
+</div>
+
+<div class="worked reveal-up">
+<h3>Worked example — where to close the loop</h3>
+<p>Spindle vibration anomaly: detect on-drive (sub-ms), decide tool stop at cell PLC (10–50&nbsp;ms), update maintenance schedule in cloud (seconds–minutes). Wrong layer choice either floods networks or arrives too late to save the tool.</p>
+</div>
+
+<div class="callout reveal-up then">
+<strong class="label">Then vs now</strong>
+Isolated cells with proprietary HMIs → connected CPS with OPC UA, digital twins, and explicit OT security zones.
+</div>
+
+<div class="terms-box reveal-up"><h3>Key terms</h3>
+<dl>
+<dt>OT</dt><dd>Operational technology — industrial control systems.</dd>
+<dt>MES</dt><dd>Manufacturing execution system.</dd>
+<dt>Industry 5.0</dt><dd>Human-centric, resilient, sustainable complement to 4.0 automation.</dd>
+</dl></div>
+
+
+<!--expanded-->
+
+<h2>Architecture patterns</h2>
+<p>Reference architectures (RAMI-like thinking) separate assets, integration layers, and lifecycle. Practically, pick where each decision lives: drive, PLC, edge PC, cloud. Push fast safety to certified local hardware; push fleet learning to the cloud; keep operators in the loop for exceptions.</p>
+<p>Education 4.0 means labs with real networks, version-controlled PLC projects, and threat models — not only breadboards. Graduates who can commission an EtherCAT axis and explain a zone/conduit diagram are more valuable than those who only memorised definitions.</p>
+
+<!--dive-->
+
+<h2>Implementation pitfalls</h2>
+<p>Buying a historian without fixing clocks yields beautiful nonsense plots. Start with time sync and naming standards.</p>
+<p>Pilot one cell end-to-end before enterprise rollout. Scale only after cyber zones and backup/restore drills work.</p>
+<p>Measure value: scrap reduction, mean time to repair, energy per part — not dashboard count.</p>
+<p>Keep humans skilled. Lights-out without retained expertise fails at the first novel fault.</p>
+<!--essay-->
+
+<h2>Extended studio notes — 08 industry 40 and cps</h2>
+<p>In professional mechatronics work, the ideas in this lesson show up less as isolated definitions and more as constraints that fight each other. Put each decision at the layer that meets its latency and assurance needs. When you write requirements, force numbers onto those constraints: sample rates, newton-metres, degrees Celsius, milliseconds of latency, millimetres of error. Vague adjectives hide trade-offs until tooling steel is already ordered.</p>
+<p>A useful studio habit is to keep a living “assumption list” beside your block diagram. Typical assumptions include linearity, constant temperature, perfect sampling clocks, infinite actuator authority, and noise-free sensors. Assuming cloud round-trips will protect spindles is how tools die during outages. Crossing out an assumption should trigger either a model upgrade, a hardware change, or an explicit residual risk acceptance signed by someone accountable.</p>
+<p>Commissioning is where theory meets cable trays. Expect ground loops, mis-labelled I/O, incorrect engineering-unit scales, and mechanical binding that looks like a “software bug.” Time sync and naming standards precede sexy dashboards. Bring an oscilloscope or drive trace tool early; bring a torque wrench and alignment dial indicator just as early. The mechatronic engineer who only debugs in an IDE will misclassify half of field faults.</p>
+<p>Documentation is part of the control system. Record firmware hashes, gain sets, mechanical revisions, and network topologies together. Future failure analysis needs that bundle. Train people for exception handling even in highly automated cells. If your organisation treats documents as after-the-fact paperwork, expect to rediscover tuning constants from scratch after every staff rotation.</p>
+<p>Finally, connect this lesson forward and backward in the course. Foundations without modern networks leave you unable to ship connected machines; modern buzzwords without foundations leave you unable to stabilise a simple loop. The remaining Module 8 lessons instantiate this CPS stack. Use the quizzes not as memorisation theatre but as prompts to redraw the diagrams from memory on paper — that retrieval practice builds the intuition you will need on a noisy factory floor.</p>
+<div class="worked reveal-up">
+<h3>Additional worked scenario</h3>
+<p>Vibration trip: edge detect in 2 ms, PLC stop in 30 ms, MES ticket in 5 s. If you reverse that order, the ticket arrives after the tool is already scrap — latency budgets are product requirements.</p>
+</div>
+
+<!--boost-->
+
+<div class="callout reveal-up key">
+<strong class="label">Studio checkpoint</strong>
+Before you mark this lesson complete, sketch the primary diagram from memory, restate the worked numerical example with different numbers, and name one modern (2026) technology that extends the classical idea without deleting it. If you cannot do those three things, skim the Key terms and Then-vs-now callouts once more. Mechatronics rewards active recall more than passive scrolling: the machines you will commission will not pause while you search a textbook under pressure. Carry forward one concrete question into the next lesson — for example a timing budget, an error-budget line item, or a fault-policy choice — and resolve it explicitly when the next topic provides the missing piece.
+</div>
+
+<form class="quiz reveal-up" data-quiz="08-industry-40-and-cps">
+<h3>Check your understanding</h3>
+<div class="quiz-q" data-answer="a">
+<div class="q-text">1. CPS emphasises:</div>
+<label><input type="radio" name="q1" value="a"> Tight coupling of compute, network, and physics with feedback</label>
+<label><input type="radio" name="q1" value="b"> Only paper ledgers</label>
+<label><input type="radio" name="q1" value="c"> Disconnecting sensors</label>
+<label><input type="radio" name="q1" value="d"> Banning Ethernet</label>
+<div class="explain">Cyber-physical definition.</div>
+</div>
+
+<div class="quiz-q" data-answer="c">
+<div class="q-text">2. Industry 5.0 stresses:</div>
+<label><input type="radio" name="q2" value="a"> Removing all humans always</label>
+<label><input type="radio" name="q2" value="b"> Only steam power</label>
+<label><input type="radio" name="q2" value="c"> Human-centric / resilient / sustainable angles</label>
+<label><input type="radio" name="q2" value="d"> Deleting safety</label>
+<div class="explain">Policy framing of 5.0.</div>
+</div>
+
+<div class="quiz-q" data-answer="c">
+<div class="q-text">3. Lights-out fits best when:</div>
+<label><input type="radio" name="q3" value="a"> Every job is unique art with no sensors</label>
+<label><input type="radio" name="q3" value="b"> Networks are optional</label>
+<label><input type="radio" name="q3" value="c"> Processes are stable and well instrumented</label>
+<label><input type="radio" name="q3" value="d"> Faults are celebrated</label>
+<div class="explain">Autonomy prerequisites.</div>
+</div>
+
+<div class="quiz-q" data-answer="d">
+<div class="q-text">4. OT means:</div>
+<label><input type="radio" name="q4" value="a"> Only office Twitter</label>
+<label><input type="radio" name="q4" value="b"> Optical toast</label>
+<label><input type="radio" name="q4" value="c"> Open toasting</label>
+<label><input type="radio" name="q4" value="d"> Operational technology (control systems)</label>
+<div class="explain">Industrial systems term.</div>
+</div>
+
+<div class="quiz-q" data-answer="c">
+<div class="q-text">5. Closing a tool-protection loop in the cloud only:</div>
+<label><input type="radio" name="q5" value="a"> Is always fastest</label>
+<label><input type="radio" name="q5" value="b"> Removes physics delay</label>
+<label><input type="radio" name="q5" value="c"> May be too slow vs on-edge detection</label>
+<label><input type="radio" name="q5" value="d"> Replaces bearings</label>
+<div class="explain">Latency layering.</div>
+</div>
+
+<button type="submit" class="btn btn-primary">Submit answers</button>
+<div class="quiz-result"></div></form>
+<div class="lesson-footer">
+  <a class="btn btn-outline" href="07-case-cnc-and-appliance.html">← Previous</a>
+  <button type="button" class="btn btn-primary" id="mark-complete">Mark complete</button>
+  <a class="btn btn-secondary" href="08-sensors-then-vs-now.html">Next →</a>
+</div>
+  </main>
+</div>
+</div>
+<script src="../js/course.js"></script>
+<script src="../js/motion.js" defer></script>
+</body>
+</html>

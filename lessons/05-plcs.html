@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programmable logic controllers — Mechatronics Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/course.css">
+<link rel="stylesheet" href="../css/motion.css">
+</head>
+<body data-lesson="05-plcs" data-base="lessons" data-prev="05-c-and-embedded.html" data-next="05-communications-and-faults.html">
+<div class="course-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html">Mechatronics <span>Studio</span></a>
+    <div class="sub">Deep Systems Course</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+<div class="main-wrap">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      <div class="topbar-title"><strong>Mechatronics Studio</strong> · Deep Systems</div>
+    </div>
+    <div class="progress-pill">
+      <span data-progress-pct>0%</span>
+      <div class="progress-bar"><div class="progress-bar-fill" data-progress-fill style="width:0%"></div></div>
+    </div>
+  </header>
+  <main class="content page-enter">
+<div class="lesson-meta">Module 5 — Embedded brains</div>
+<h1>Programmable logic controllers</h1>
+
+<p>Programmable logic controllers industrialise embedded control: modular I/O, watchdogs, retained memory, and programming languages standardised in IEC 61131-3.</p>
+
+<h2>Scan cycle</h2>
+<p>Read inputs → execute programme → write outputs → housekeeping. Scan time must fit the process; overly long scans make logic feel laggy and can miss short pulses without pulse catch hardware.</p>
+
+<h2>Ladder, latches, timers, counters</h2>
+<p>Ladder logic visually mimics relay rungs. A seal-in (latch) keeps a coil energised after the start contact opens until a stop contact breaks the seal. Timers (TON/TOF) and counters (CTU/CTD) implement delays and batch counts. Analogue I/O brings scaled engineering units into the same programme for PID blocks.</p>
+
+<div class="diagram">
+<svg viewBox="0 0 520 160" xmlns="http://www.w3.org/2000/svg">
+  <rect width="520" height="160" fill="#f8fafc"/>
+  <text x="20" y="24" font-family="IBM Plex Sans" font-size="12" fill="#64748b">Ladder concept — start/stop seal-in</text>
+  <line x1="40" y1="70" x2="480" y2="70" stroke="#0b1220" stroke-width="2" class="svg-draw"/>
+  <line x1="40" y1="130" x2="480" y2="130" stroke="#0b1220" stroke-width="2" class="svg-draw"/>
+  <rect x="80" y="60" width="50" height="20" fill="none" stroke="#14b8a6" stroke-width="2" class="svg-pulse"/>
+  <text x="88" y="75" font-size="10">Start</text>
+  <rect x="160" y="60" width="50" height="20" fill="none" stroke="#f59e0b" stroke-width="2" class="svg-pulse"/>
+  <text x="172" y="75" font-size="10">Stop</text>
+  <text x="230" y="75" font-size="11">(NC)</text>
+  <circle cx="320" cy="70" r="14" fill="none" stroke="#0b1220" stroke-width="2" class="svg-spin svg-pulse"/>
+  <text x="308" y="74" font-size="10">Run</text>
+  <line x1="105" y1="80" x2="105" y2="110" stroke="#6366f1" stroke-width="1.5" class="svg-flow"/>
+  <line x1="105" y1="110" x2="320" y2="110" stroke="#6366f1" stroke-width="1.5" class="svg-flow"/>
+  <line x1="320" y1="110" x2="320" y2="84" stroke="#6366f1" stroke-width="1.5" class="svg-flow"/>
+  <text x="140" y="105" font-size="10" fill="#6366f1">Run seal-in</text>
+</svg>
+<div class="diagram-caption">Figure: Conceptual start/stop with seal-in contact around Start.</div>
+</div>
+
+<div class="worked reveal-up">
+<h3>Worked example — original latch narrative</h3>
+<p>Press Start: Start contact true, Stop closed, Run coil energises. Seal-in contact parallel to Start closes, so releasing Start keeps Run true. Press Stop (normally-closed opens): rung de-energises, seal breaks. This pattern appears in conveyors and pump starters worldwide.</p>
+</div>
+
+<div class="callout reveal-up then">
+<strong class="label">Then vs now</strong>
+Ladder-only thinking expands to structured text, OOP function blocks, safety PLCs with diverse languages, and soft-PLCs on industrial PCs (Module 8).
+</div>
+
+<div class="terms-box reveal-up"><h3>Key terms</h3>
+<dl>
+<dt>Seal-in / latch</dt><dd>Holding circuit using an output contact in parallel with start.</dd>
+<dt>TON</dt><dd>On-delay timer.</dd>
+<dt>IEC 61131-3</dt><dd>PLC language standard family.</dd>
+</dl></div>
+
+
+<!--expanded-->
+
+<h2>Organisation and analogue scaling</h2>
+<p>Large PLC programmes need structure: equipment modules, faceplates, and consistent tag naming. Analogue values should live in engineering units after a single scaling step — duplicated scalings drift apart. PID blocks need mode handling (auto/manual), bumpless transfer, and per-loop alarm limits.</p>
+<p>Simulation and forcing of I/O help commission safely, but forced points left behind are legendary hazards. Procedures for removing forces belong in the commissioning checklist.</p>
+
+<!--dive-->
+
+<h2>Motion and safety adjacency</h2>
+<p>Many “PLC projects” actually split: standard PLC for cell logic, motion controller for axes, safety PLC for guards. Define which controller owns which output to avoid dual drives fighting.</p>
+<p>Use produced/consumed tags or cyclic bus data with explicit timeouts. A silent network should drop motion to a defined stop, not freeze last velocity.</p>
+<p>Analogue alarms need hysteresis to avoid chatter. Discrete debounce belongs in one layer only.</p>
+<p>Document the scan time budget after adding diagnostics — diagnostics that double scan time are not free.</p>
+<!--essay-->
+
+<h2>Extended studio notes — 05 plcs</h2>
+<p>In professional mechatronics work, the ideas in this lesson show up less as isolated definitions and more as constraints that fight each other. Readable ladder saves plants during 3 a.m. faults; clever spaghetti costs downtime. When you write requirements, force numbers onto those constraints: sample rates, newton-metres, degrees Celsius, milliseconds of latency, millimetres of error. Vague adjectives hide trade-offs until tooling steel is already ordered.</p>
+<p>A useful studio habit is to keep a living “assumption list” beside your block diagram. Typical assumptions include linearity, constant temperature, perfect sampling clocks, infinite actuator authority, and noise-free sensors. Assuming forces will be removed after commissioning is how stuck valves stay forced for years. Crossing out an assumption should trigger either a model upgrade, a hardware change, or an explicit residual risk acceptance signed by someone accountable.</p>
+<p>Commissioning is where theory meets cable trays. Expect ground loops, mis-labelled I/O, incorrect engineering-unit scales, and mechanical binding that looks like a “software bug.” Scan overruns make timers lie relative to wall clocks. Bring an oscilloscope or drive trace tool early; bring a torque wrench and alignment dial indicator just as early. The mechatronic engineer who only debugs in an IDE will misclassify half of field faults.</p>
+<p>Documentation is part of the control system. Record firmware hashes, gain sets, mechanical revisions, and network topologies together. Future failure analysis needs that bundle. Standardise analogue scaling FBs so each loop does not invent its own maths. If your organisation treats documents as after-the-fact paperwork, expect to rediscover tuning constants from scratch after every staff rotation.</p>
+<p>Finally, connect this lesson forward and backward in the course. Foundations without modern networks leave you unable to ship connected machines; modern buzzwords without foundations leave you unable to stabilise a simple loop. Safety PLCs later separate certified logic from this standard layer. Use the quizzes not as memorisation theatre but as prompts to redraw the diagrams from memory on paper — that retrieval practice builds the intuition you will need on a noisy factory floor.</p>
+<div class="worked reveal-up">
+<h3>Additional worked scenario</h3>
+<p>Seal-in motor starter: Start NO, Stop NC, overload NC in series with Run coil; Run contact parallels Start. Overload trip breaks the rung and requires explicit reset — map the same pattern into ST for teams that prefer text, but keep the safety story identical.</p>
+</div>
+
+<!--boost-->
+
+<div class="callout reveal-up key">
+<strong class="label">Studio checkpoint</strong>
+Before you mark this lesson complete, sketch the primary diagram from memory, restate the worked numerical example with different numbers, and name one modern (2026) technology that extends the classical idea without deleting it. If you cannot do those three things, skim the Key terms and Then-vs-now callouts once more. Mechatronics rewards active recall more than passive scrolling: the machines you will commission will not pause while you search a textbook under pressure. Carry forward one concrete question into the next lesson — for example a timing budget, an error-budget line item, or a fault-policy choice — and resolve it explicitly when the next topic provides the missing piece.
+</div>
+
+<form class="quiz reveal-up" data-quiz="05-plcs">
+<h3>Check your understanding</h3>
+<div class="quiz-q" data-answer="c">
+<div class="q-text">1. PLC scan order typically:</div>
+<label><input type="radio" name="q1" value="a"> Write outputs before reading inputs always as only step</label>
+<label><input type="radio" name="q1" value="b"> Compile Java in the fieldbus</label>
+<label><input type="radio" name="q1" value="c"> Read inputs, solve, write outputs</label>
+<label><input type="radio" name="q1" value="d"> Ignore I/O</label>
+<div class="explain">Classic scan.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">2. Seal-in contact purpose:</div>
+<label><input type="radio" name="q2" value="a"> Keep output on after start releases</label>
+<label><input type="radio" name="q2" value="b"> Measure strain</label>
+<label><input type="radio" name="q2" value="c"> Generate FOC</label>
+<label><input type="radio" name="q2" value="d"> Calibrate thermocouples</label>
+<div class="explain">Latching behaviour.</div>
+</div>
+
+<div class="quiz-q" data-answer="d">
+<div class="q-text">3. TON timer:</div>
+<label><input type="radio" name="q3" value="a"> Only Ethernet PHY</label>
+<label><input type="radio" name="q3" value="b"> A type of LVDT</label>
+<label><input type="radio" name="q3" value="c"> Gear oil</label>
+<label><input type="radio" name="q3" value="d"> On-delay</label>
+<div class="explain">Timer on delay.</div>
+</div>
+
+<div class="quiz-q" data-answer="c">
+<div class="q-text">4. Short input pulses may be missed if:</div>
+<label><input type="radio" name="q4" value="a"> Rungs use colour</label>
+<label><input type="radio" name="q4" value="b"> Stop is NC</label>
+<label><input type="radio" name="q4" value="c"> Scan is slow and no pulse catch</label>
+<label><input type="radio" name="q4" value="d"> HMI exists</label>
+<div class="explain">Scan-time aliasing of discrete events.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">5. Analogue I/O in PLCs enables:</div>
+<label><input type="radio" name="q5" value="a"> Scaled continuous values and PID blocks</label>
+<label><input type="radio" name="q5" value="b"> Only coils forever</label>
+<label><input type="radio" name="q5" value="c"> Removal of all sensors</label>
+<label><input type="radio" name="q5" value="d"> Infinite scan rate automatically</label>
+<div class="explain">Continuous control in PLC.</div>
+</div>
+
+<button type="submit" class="btn btn-primary">Submit answers</button>
+<div class="quiz-result"></div></form>
+<div class="lesson-footer">
+  <a class="btn btn-outline" href="05-c-and-embedded.html">← Previous</a>
+  <button type="button" class="btn btn-primary" id="mark-complete">Mark complete</button>
+  <a class="btn btn-secondary" href="05-communications-and-faults.html">Next →</a>
+</div>
+  </main>
+</div>
+</div>
+<script src="../js/course.js"></script>
+<script src="../js/motion.js" defer></script>
+</body>
+</html>

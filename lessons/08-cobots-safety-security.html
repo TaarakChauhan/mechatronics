@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cobots, safety & OT security — Mechatronics Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/course.css">
+<link rel="stylesheet" href="../css/motion.css">
+</head>
+<body data-lesson="08-cobots-safety-security" data-base="lessons" data-prev="08-digital-twins-and-edge-ai.html" data-next="08-then-vs-now-map.html">
+<div class="course-shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <a href="../index.html">Mechatronics <span>Studio</span></a>
+    <div class="sub">Deep Systems Course</div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav"></nav>
+</aside>
+<div class="main-wrap">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:0.75rem">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Menu">☰</button>
+      <div class="topbar-title"><strong>Mechatronics Studio</strong> · Deep Systems</div>
+    </div>
+    <div class="progress-pill">
+      <span data-progress-pct>0%</span>
+      <div class="progress-bar"><div class="progress-bar-fill" data-progress-fill style="width:0%"></div></div>
+    </div>
+  </header>
+  <main class="content page-enter">
+<div class="lesson-meta">Module 8 — What changed: modern systems</div>
+<h1>Cobots, safety & OT security</h1>
+
+<p>Two non-optional layers grew around mechatronic products: <strong>collaborative safety</strong> and <strong>OT cybersecurity</strong>. Ignoring either is no longer a quirky legacy choice — it is a liability.</p>
+
+<h2>ISO 10218 / TS 15066 and PFL</h2>
+<p>Industrial robot safety standards (ISO 10218) and collaborative robot technical specification ISO/TS 15066 describe power-and-force limiting (PFL), speed-and-separation monitoring, and other collaborative modes. Designing a cobot cell means validating contact forces, biomechanical thresholds, and safeguarding — not only programming a waving demo.</p>
+
+<h2>IEC 62443 zones and conduits</h2>
+<p>OT security standard IEC 62443 promotes zoning (group assets by trust/criticality) and conduits (controlled channels between zones). Patching, authentication, network segmentation, and least privilege apply to PLCs and drives — attackers do not care that your laptop “is only for maintenance.”</p>
+
+<div class="callout reveal-up watch">
+<strong class="label">Watch-out</strong>
+A ROS laptop on the same flat network as motion controllers is a common anti-pattern. Segment, authenticate, and monitor.
+</div>
+
+<div class="worked reveal-up">
+<h3>Worked example — zone sketch</h3>
+<p>Zone A: safety PLC + estop chain. Zone B: motion EtherCAT. Zone C: HMI/engineering. Zone D: corporate IT. Conduits allow OPC UA from B→D via a firewall DMZ — not a free-for-all switch.</p>
+</div>
+
+<div class="callout reveal-up then">
+<strong class="label">Then vs now</strong>
+Air gaps were accidental security. Connected CPS demands designed security and collaborative risk assessments with documented residual risk.
+</div>
+
+<div class="terms-box reveal-up"><h3>Key terms</h3>
+<dl>
+<dt>PFL</dt><dd>Power and force limiting collaborative mode.</dd>
+<dt>IEC 62443</dt><dd>Industrial cybersecurity standards family.</dd>
+<dt>Zone / conduit</dt><dd>Segmentation model for OT networks.</dd>
+</dl></div>
+
+
+<!--expanded-->
+
+<h2>Integrating the two layers</h2>
+<p>A compromised HMI that raises force limits undermines TS 15066 validation. Safety and security risk assessments should cross-reference: who can change safety parameters, how are changes authenticated, and how are they logged? Diversity and physical estops remain essential.</p>
+<p>Training operators and technicians is part of the control system. The most advanced cobot is unsafe in untrained hands with a bridged guard.</p>
+
+<!--dive-->
+
+<h2>Validation and audit</h2>
+<p>Validate PFL with instrumented collision tests per relevant body regions and speeds. Keep reports with robot firmware hashes.</p>
+<p>Penetration tests on OT networks should be scoped and supervised; include vendor remote-access paths.</p>
+<p>Review accounts: shared technician passwords are still common and still wrong.</p>
+<p>Integrate safety resets and security acknowledgements into operator training curricula.</p>
+<!--essay-->
+
+<h2>Extended studio notes — 08 cobots safety security</h2>
+<p>In professional mechatronics work, the ideas in this lesson show up less as isolated definitions and more as constraints that fight each other. Safety validations and security zones are now inseparable design artefacts. When you write requirements, force numbers onto those constraints: sample rates, newton-metres, degrees Celsius, milliseconds of latency, millimetres of error. Vague adjectives hide trade-offs until tooling steel is already ordered.</p>
+<p>A useful studio habit is to keep a living “assumption list” beside your block diagram. Typical assumptions include linearity, constant temperature, perfect sampling clocks, infinite actuator authority, and noise-free sensors. Assuming a flat network “inside the firewall” equals OT security is outdated. Crossing out an assumption should trigger either a model upgrade, a hardware change, or an explicit residual risk acceptance signed by someone accountable.</p>
+<p>Commissioning is where theory meets cable trays. Expect ground loops, mis-labelled I/O, incorrect engineering-unit scales, and mechanical binding that looks like a “software bug.” PFL without validated force curves is theatre. Bring an oscilloscope or drive trace tool early; bring a torque wrench and alignment dial indicator just as early. The mechatronic engineer who only debugs in an IDE will misclassify half of field faults.</p>
+<p>Documentation is part of the control system. Record firmware hashes, gain sets, mechanical revisions, and network topologies together. Future failure analysis needs that bundle. Shared passwords on engineering laptops undermine both domains. If your organisation treats documents as after-the-fact paperwork, expect to rediscover tuning constants from scratch after every staff rotation.</p>
+<p>Finally, connect this lesson forward and backward in the course. Foundations without modern networks leave you unable to ship connected machines; modern buzzwords without foundations leave you unable to stabilise a simple loop. The capstone map next helps you revise the whole course through this lens. Use the quizzes not as memorisation theatre but as prompts to redraw the diagrams from memory on paper — that retrieval practice builds the intuition you will need on a noisy factory floor.</p>
+<div class="worked reveal-up">
+<h3>Additional worked scenario</h3>
+<p>Zone A safety PLC; Zone B motion; Zone C engineering; conduit B→C allow programming only via jump host with MFA. Test that a compromised HMI in C cannot raise Zone A force limits without dual approval — write that as a security control tied to the safety case.</p>
+</div>
+
+<!--boost-->
+
+<div class="callout reveal-up key">
+<strong class="label">Studio checkpoint</strong>
+Before you mark this lesson complete, sketch the primary diagram from memory, restate the worked numerical example with different numbers, and name one modern (2026) technology that extends the classical idea without deleting it. If you cannot do those three things, skim the Key terms and Then-vs-now callouts once more. Mechatronics rewards active recall more than passive scrolling: the machines you will commission will not pause while you search a textbook under pressure. Carry forward one concrete question into the next lesson — for example a timing budget, an error-budget line item, or a fault-policy choice — and resolve it explicitly when the next topic provides the missing piece.
+</div>
+
+<form class="quiz reveal-up" data-quiz="08-cobots-safety-security">
+<h3>Check your understanding</h3>
+<div class="quiz-q" data-answer="a">
+<div class="q-text">1. ISO/TS 15066 relates to:</div>
+<label><input type="radio" name="q1" value="a"> Collaborative robot safety guidance</label>
+<label><input type="radio" name="q1" value="b"> Only paint curing</label>
+<label><input type="radio" name="q1" value="c"> Wi-Fi antennas alone</label>
+<label><input type="radio" name="q1" value="d"> ADC reference voltages</label>
+<div class="explain">Cobot tech spec.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">2. PFL means:</div>
+<label><input type="radio" name="q2" value="a"> Power-and-force limiting</label>
+<label><input type="radio" name="q2" value="b"> Pretty font library</label>
+<label><input type="radio" name="q2" value="c"> Pneumatic flow limiter only as acronym here</label>
+<label><input type="radio" name="q2" value="d"> Python for Linux</label>
+<div class="explain">Collaborative mode.</div>
+</div>
+
+<div class="quiz-q" data-answer="a">
+<div class="q-text">3. IEC 62443 zones:</div>
+<label><input type="radio" name="q3" value="a"> Group assets by trust and control conduits between them</label>
+<label><input type="radio" name="q3" value="b"> Sort cables by colour only</label>
+<label><input type="radio" name="q3" value="c"> Replace mechanical guards always</label>
+<label><input type="radio" name="q3" value="d"> Ban safety PLCs</label>
+<div class="explain">Security architecture.</div>
+</div>
+
+<div class="quiz-q" data-answer="b">
+<div class="q-text">4. Flat networks with engineering laptops:</div>
+<label><input type="radio" name="q4" value="a"> Are required by physics</label>
+<label><input type="radio" name="q4" value="b"> Increase OT attack surface — segment instead</label>
+<label><input type="radio" name="q4" value="c"> Provide SIL automatically</label>
+<label><input type="radio" name="q4" value="d"> Calibrate IMUs</label>
+<div class="explain">Segmentation hygiene.</div>
+</div>
+
+<div class="quiz-q" data-answer="b">
+<div class="q-text">5. Residual risk documentation:</div>
+<label><input type="radio" name="q5" value="a"> Optional fan fiction</label>
+<label><input type="radio" name="q5" value="b"> Part of responsible safety practice</label>
+<label><input type="radio" name="q5" value="c"> Replaces all guards</label>
+<label><input type="radio" name="q5" value="d"> Is only for marketing</label>
+<div class="explain">Risk assessment culture.</div>
+</div>
+
+<button type="submit" class="btn btn-primary">Submit answers</button>
+<div class="quiz-result"></div></form>
+<div class="lesson-footer">
+  <a class="btn btn-outline" href="08-digital-twins-and-edge-ai.html">← Previous</a>
+  <button type="button" class="btn btn-primary" id="mark-complete">Mark complete</button>
+  <a class="btn btn-secondary" href="08-then-vs-now-map.html">Next →</a>
+</div>
+  </main>
+</div>
+</div>
+<script src="../js/course.js"></script>
+<script src="../js/motion.js" defer></script>
+</body>
+</html>
