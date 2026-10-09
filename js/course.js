@@ -226,7 +226,14 @@
     if (!el) return;
     const fromLessons = basePath === "lessons";
     const p = loadProgress();
-    let html = "";
+    const pre = fromLessons ? "../" : "";
+    const here = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+    let html = '<div class="mod-group site-links"><div class="mod-title">Site</div>';
+    [["Home", "index.html"], ["Syllabus", "course.html"], ["Glossary", "glossary.html"], ["About", "about.html"], ["Progress", "progress.html"]].forEach((x) => {
+      const cur = here === x[1];
+      html += '<a class="lesson-link' + (cur ? " active" : "") + '" href="' + pre + x[1] + '"' + (cur ? ' aria-current="page"' : "") + '><span class="check"></span><span class="lt">' + x[0] + "</span></a>";
+    });
+    html += "</div>";
     COURSE.modules.forEach((m) => {
       html += '<div class="mod-group"><div class="mod-title">Module ' + m.num + " — " + m.title + "</div>";
       m.lessons.forEach((l) => {
@@ -413,6 +420,22 @@
     });
   }
 
+  function initTopbarLink() {
+    const pill = document.querySelector(".topbar .progress-pill");
+    if (!pill || document.querySelector(".topbar-link")) return;
+    const fromLessons = document.body.getAttribute("data-base") === "lessons";
+    const a = document.createElement("a");
+    a.className = "topbar-link";
+    a.href = (fromLessons ? "../" : "") + "glossary.html";
+    a.textContent = "Glossary";
+    if (/glossary\.html$/i.test(location.pathname)) a.setAttribute("aria-current", "page");
+    const wrap = document.createElement("div");
+    wrap.className = "topbar-right";
+    pill.parentNode.insertBefore(wrap, pill);
+    wrap.appendChild(a);
+    wrap.appendChild(pill);
+  }
+
   function initMenuToggle() {
     const btn = document.getElementById("menu-toggle");
     const side = document.getElementById("sidebar");
@@ -455,6 +478,7 @@
     initMarkComplete();
     initKeyboardNav();
     initMenuToggle();
+    initTopbarLink();
     resumeLink();
 
     const resetBtn = document.getElementById("reset-progress");
